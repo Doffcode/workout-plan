@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How This Plan Was Made</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dce1;
+  --accent:#1f6f8b; --accent-ink:#ffffff; --plate:#c8402f; --swim:#2a7fbf; --chip:#e3eaee; --good:#2f8a57;
+  --c-push:#c8402f; --c-pull:#1f6f8b; --c-legs:#8a6a1f; --c-full:#5b4b9a; --c-rest:#e3eaee;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; --good:#5cc489;
+  --c-push:#ef6b58; --c-pull:#4fb3d4; --c-legs:#d4b04f; --c-full:#a594e6; --c-rest:#1f2c36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; --good:#5cc489;
+  --c-push:#ef6b58; --c-pull:#4fb3d4; --c-legs:#d4b04f; --c-full:#a594e6; --c-rest:#1f2c36; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:2.6rem;text-transform:uppercase;letter-spacing:.01em}
+h2{font-size:1.8rem;text-transform:uppercase;letter-spacing:.02em}
+h3{font-size:1.1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font:600 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{padding-top:28px;display:flex;flex-direction:column;gap:14px}
+.back{font:600 .8rem var(--mono);text-transform:uppercase;letter-spacing:.08em;text-decoration:none}
+section{display:flex;flex-direction:column;gap:14px}
+.num{font:700 .9rem/1 var(--mono);color:var(--accent);letter-spacing:.08em}
+.rule{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.rule b{font:700 1.15rem/1.2 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.you{border-left-color:var(--plate)}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.fig svg{width:100%;height:auto;display:block;overflow:visible}
+.cap{font-size:.86rem;color:var(--muted)}
+svg text{font-family:var(--mono);fill:var(--muted)}
+svg .lbl{font-family:var(--display);font-weight:700;fill:var(--ink)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td.n{font:600 .9rem var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+/* Split grids */
+.split{display:grid;grid-template-columns:7.5em repeat(7,1fr);gap:3px;font:600 .7rem/1 var(--mono);text-transform:uppercase}
+.split .h{color:var(--muted);text-align:center;padding:4px 0}
+.split .name{font:700 .95rem/1.1 var(--display);letter-spacing:.02em;align-self:center;color:var(--ink);text-transform:uppercase}
+.split .c{border-radius:4px;padding:9px 0;text-align:center;color:#fff;letter-spacing:.02em}
+.c.push{background:var(--c-push)}.c.pull{background:var(--c-pull)}.c.legs{background:var(--c-legs)}.c.full{background:var(--c-full)}
+.c.off{background:var(--c-rest);color:var(--muted)}
+.c.swim{background:var(--swim)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .split .c:not(.off){color:#0f161b}}
+:root[data-theme="dark"] .split .c:not(.off){color:#0f161b}
+@media (max-width:480px){.split{grid-template-columns:5.2em repeat(7,1fr);font-size:.58rem}.split .name{font-size:.8rem}h1{font-size:2.1rem}}
+/* Draw-in animations */
+.draw{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 3.2s ease-out .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grow{transform-box:fill-box;transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleY(0)}}
+.pop{opacity:0;animation:pop .4s ease-out forwards}
+@keyframes pop{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.draw,.grow,.pop{animation:none!important;stroke-dashoffset:0;opacity:1}}
+.vol{display:flex;flex-direction:column;gap:6px}
+.vrow{display:grid;grid-template-columns:7.6em 1fr;gap:10px;align-items:center;font:500 .8rem/1 var(--mono)}
+.vl{text-align:right;color:var(--muted);white-space:nowrap}
+.vt{position:relative;height:18px;display:flex;align-items:center;gap:6px}
+.vb{height:100%;background:var(--accent);border-radius:2px;flex:none;transform-origin:left;animation:growx .8s cubic-bezier(.2,.8,.2,1) both}
+.vb.hot{background:var(--plate)}
+.vt b{font:700 .85rem/1 var(--display);white-space:nowrap}
+.vhead .vt{height:16px}
+.vol .vt::before{content:"";position:absolute;left:40%;width:40%;top:-4px;bottom:-4px;background:var(--good);opacity:.1;pointer-events:none}
+.vhead .vt::before{display:none}
+.vhead i{position:absolute;transform:translateX(-50%);font-style:normal;color:var(--muted);font-size:.7rem}
+.vhead em{position:absolute;left:60%;transform:translateX(-50%);font-style:normal;color:var(--good);font-size:.7rem;top:-14px}
+@keyframes growx{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.vb{animation:none}}
+.src li{font-size:.85rem;color:var(--muted)}
+
+.v{display:inline-block;font:700 .66rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;border-radius:4px;white-space:nowrap}
+.v.solid{background:var(--good);color:#fff}.v.conv{background:var(--swim);color:#fff}.v.cont{background:#b8862b;color:#fff}.v.myth{background:var(--plate);color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .v{color:#0f161b}}
+:root[data-theme="dark"] .v{color:#0f161b}
+.steps-list{counter-reset:s;display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.steps-list li{counter-increment:s;display:grid;grid-template-columns:2.2em 1fr;gap:10px}
+.steps-list li::before{content:counter(s);font:700 1.4rem/1 var(--display);color:var(--accent)}
+td.verd{width:1%}
+</style></head><body><div class="wrap">
+<header>
+  <a class="back" href="index.html">← Back to the plan</a>
+  <span class="eyebrow">Research log · 19 Oct 2026</span>
+  <h1>How This Plan Was Made</h1>
+  <p>Version 1 was built from 14 reels your feed happened to show you. Nobody checked whether those creators knew what they were doing, or whether their claims were true. Version 2 was built the other way round: <b>first find people worth trusting, then check what they say against the research, then check every exercise video.</b></p>
+</header>
+
+<section><span class="num">STEP 1</span><h2>Who to trust</h2>
+  <p>Followers counted for nothing. To be included, a person had to pass all four:</p>
+  <ol class="steps-list">
+    <li><span><b>A record you can check.</b> I counted each person's papers in PubMed (the medical research database), or required a clinical licence for form and injury advice.</span></li>
+    <li><span><b>Shows the evidence.</b> Cites studies and says how strong they are.</span></li>
+    <li><span><b>Admits uncertainty.</b> Says "we don't know" and has publicly changed their mind.</span></li>
+    <li><span><b>No miracle claims</b>, and the advice isn't just a way to sell something.</span></li>
+  </ol>
+  <div class="rule you"><b>The groupthink trap you worried about</b><p>Many top "evidence-based" names write papers and podcasts together, so them agreeing isn't independent. To guard against that, I added two opposing schools (Steele &amp; Fisher, Beardsley) and used published meta-analyses as the tie-breaker, not headcount.</p></div>
+  <div class="tbl"><table><thead><tr><th>Expert</th><th>PubMed papers</th><th>Why they're here</th></tr></thead><tbody><tr><td><b>Brad Schoenfeld, PhD</b><br><span class="cap">Hypertrophy research</span></td><td class="n">295</td><td>Leads most of the meta-analyses this plan uses</td></tr><tr><td><b>Eric Helms, PhD</b><br><span class="cap">Researcher + natural pro coach</span></td><td class="n">73</td><td>His novice program is your plan's skeleton</td></tr><tr><td><b>Greg Nuckols, MA</b><br><span class="cap">Stronger By Science</span></td><td class="n">8</td><td>Long, cited articles; publicly corrects himself</td></tr><tr><td><b>James Krieger, MS</b><br><span class="cap">Meta-analyst</span></td><td class="n">26</td><td>Ran the original volume analyses</td></tr><tr><td><b>Menno Henselmans, MSc</b><br><span class="cap">Coach-researcher</span></td><td class="n">21</td><td>Often argues against the crowd with data</td></tr><tr><td><b>Milo Wolf</b><br><span class="cap">Researcher</span></td><td class="n">n/a</td><td>Range-of-motion & failure studies</td></tr><tr><td><b>Jeff Nippard, BSc</b><br><span class="cap">Communicator, natural pro</span></td><td class="n">4</td><td>Shows his sources; sells programs (noted)</td></tr><tr><td><b>Mike Israetel, PhD</b><br><span class="cap">RP Strength</span></td><td class="n">6</td><td>Most of your GIFs; some RP ideas are rules of thumb</td></tr><tr><td><b>James Steele & James Fisher, PhD</b><br><span class="cap">Dissent: low-volume school</span></td><td class="n">dozens</td><td>Included to stress-test the mainstream</td></tr><tr><td><b>Chris Beardsley</b><br><span class="cap">Dissent: hypertrophy reviewer</span></td><td class="n">25</td><td>Same reason</td></tr><tr><td><b>Stuart McGill, PhD</b><br><span class="cap">Spine biomechanics</span></td><td class="n">138</td><td>Core & back safety</td></tr><tr><td><b>Aaron Horschig, DPT</b><br><span class="cap">Physical therapist (Squat University)</span></td><td class="n">clinician</td><td>Technique & injury</td></tr><tr><td><b>Stuart Phillips, PhD</b><br><span class="cap">Protein research</span></td><td class="n">550</td><td>Protein targets</td></tr><tr><td><b>Alan Aragon, MS</b><br><span class="cap">Nutrition</span></td><td class="n">26</td><td>Recomposition, protein</td></tr></tbody></table></div>
+  <p class="cap">Left out despite being popular: Athlean-X (2 papers, bold "never do this" claims), Starting Strength's Mark Rippetoe (1 paper, dismisses research), and every unverifiable feed creator.</p>
+</section>
+
+<section><span class="num">STEP 2</span><h2>What they say, on every platform</h2>
+  <ul>
+    <li><b>Research papers:</b> about 20 meta-analyses and trials (volume, effort, frequency, splits, rest, tempo, range of motion, cardio, protein, sleep, posture, spot reduction, creatine).</li>
+    <li><b>Articles &amp; programs:</b> Stronger By Science, RP Strength, Helms' novice program.</li>
+    <li><b>YouTube:</b> 46 technique videos from Nippard, RP and Squat University, read as full transcripts and compared cue by cue.</li>
+  </ul>
+</section>
+
+<section><span class="num">STEP 3</span><h2>Popular vs proven</h2>
+  <p>Every claim got one of four labels. The plan's structure uses only <span class="v solid">Solid</span>. <span class="v conv">Convention</span> (common practice without strong data) is used only as a starting point, with rules to adjust it.</p>
+  <div class="tbl"><table><tbody><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Progressive overload: add reps, then weight, over time</b><br><span class="cap">Every training study; all 14 experts</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>More hard sets → more growth, with diminishing returns</b><br><span class="cap">Schoenfeld 2017; Pelland 2024 (67 studies)</span></td></tr><tr><td class="verd"><span class="v conv">Convention</span></td><td><b>"10–20 sets per muscle per week is optimal"</b><br><span class="cap">Nuckols traced it to how one meta-analysis grouped studies; ~10 is a sensible start</span></td></tr><tr><td class="verd"><span class="v conv">Convention</span></td><td><b>RP volume landmarks (MEV/MRV) and adding sets every week</b><br><span class="cap">RP's own article cites no studies; "starting points, not gospel"</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Sets must end close to failure; 1–2 reps short ≈ failure</b><br><span class="cap">Robinson 2024 meta-regression; Refalo 2024 trial</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Train each muscle about twice a week</b><br><span class="cap">Mostly because it spreads sets out; frequency itself barely matters when sets are equal (Schoenfeld 2019)</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>There's one best split (PPL, bro split...)</b><br><span class="cap">Ramos-Campo 2024: no difference when weekly sets match</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Any reps from ~5 to 30 build muscle if hard; heavy = strength</b><br><span class="cap">Schoenfeld 2017 meta-analysis</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Rest 2–3 min on big lifts, ~90 s on small ones</b><br><span class="cap">Singer 2024: small benefit past 60 s, none detectable past 90 s</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Slow "time under tension" reps build more</b><br><span class="cap">Schoenfeld 2015: 0.5–8 s per rep all similar</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Full range of motion, especially the stretched position</b><br><span class="cap">Wolf 2023 meta-analysis; every coach</span></td></tr><tr><td class="verd"><span class="v conv">Convention</span></td><td><b>Deload every 4–8 weeks</b><br><span class="cap">Coach consensus survey (21 coaches), "under-researched"</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Cardio kills your gains</b><br><span class="cap">Schumann 2022 (43 studies): no effect on muscle growth</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>~1.6 g protein per kg per day maximises gains</b><br><span class="cap">Morton 2018 meta-analysis; Phillips</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Your body only uses ~30 g protein per meal</b><br><span class="cap">Trommelen 2023: 100 g kept building muscle for 12 h</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Beginners can lose fat and build muscle at the same time</b><br><span class="cap">Barakat & Schoenfeld 2020 review</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Ab exercises burn belly fat (spot reduction)</b><br><span class="cap">Ramirez-Campillo 2021 meta-analysis: zero effect</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Stretching fixes pelvic tilt / belly bulge / rounded shoulders</b><br><span class="cap">Warneke 2024 (23 trials): stretching didn't change posture; strengthening did</span></td></tr><tr><td class="verd"><span class="v cont">Contested</span></td><td><b>Crunches damage your spine</b><br><span class="cap">McGill (pig-spine lab data) vs Contreras & Schoenfeld; plan uses mostly loaded, controlled ab work + stability</span></td></tr><tr><td class="verd"><span class="v myth">Myth</span></td><td><b>Leg extensions are bad for your knees</b><br><span class="cap">Schoenfeld: no evidence of harm in healthy knees</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Creatine monohydrate works and is safe</b><br><span class="cap">ISSN 2017, 200+ studies</span></td></tr><tr><td class="verd"><span class="v solid">Solid</span></td><td><b>Sleep loss costs muscle</b><br><span class="cap">Lamon 2021; Nedeltcheva 2010</span></td></tr></tbody></table></div>
+</section>
+
+<section><span class="num">STEP 4</span><h2>Technique: where the coaches disagreed</h2>
+  <p>Every cue on your plan is one that at least two independent sources gave (RP's many videos count as one source). When they disagreed:</p>
+  <ul>
+    <li><b>Romanian deadlift depth.</b> Nippard and Squat University: stop around mid-shin; going to the floor makes most people round their lower back. RP's demo went to the floor, so <b>your RDL GIF now comes from Nippard's video</b> instead.</li>
+    <li><b>Push-up hips.</b> RP likes them slightly high; Squat University wants a straight line. The plan uses the straight line.</li>
+    <li><b>Pull-up shoulder blades.</b> Nippard cues "shoulders down first"; RP says don't worry. Both agree on what matters: full hang, chin over the bar, no swinging.</li>
+    <li><b>Squat toe angle.</b> RP ~45°, Nippard 15–30°, Squat University closer to straight. The plan says "slightly out, whatever lets your knees follow your toes".</li>
+    <li><b>Grip widths, bench angles, elbow angles:</b> every coach said "try a few and keep what you feel without joint pain". The plan says the same instead of inventing a rule.</li>
+  </ul>
+</section>
+
+<section><span class="num">STEP 5</span><h2>Your 14 reels, audited</h2>
+  <p>I checked all 24 exercise clips frame by frame against that technique.</p>
+  <ul>
+    <li><b>1 unsafe:</b> the trap-bar deadlift was done with a rounded back. Replaced.</li>
+    <li><b>1 with a fault:</b> hips sagging in the brick push-ups. Replaced.</li>
+    <li><b>3 badly cut:</b> clips that mixed two different exercises. Dropped.</li>
+    <li><b>6 with false promises:</b> "fix your belly bulge", "fix rounded shoulders". The moves are kept as optional Sunday mobility, without the promise.</li>
+    <li><b>Bodyweight moves were fine</b>, just shaky footage. Every gym-lift demo now comes from a vetted coach.</li>
+  </ul>
+</section>
+
+<section><span class="num">THE QUESTION</span><h2>Will it work 99 times out of 100?</h2>
+  <p>Honest answer: <b>nobody can promise that for any fixed plan</b>, and anyone who does is the kind of source this process filters out. Research shows people respond very differently: one study found the differences <i>between people</i> were about 40× bigger than the effect of tweaking the program. What studies also show: when strength, size and fitness are all measured, practically everyone improves at something, and longer training means more people respond.</p>
+  <p>So the plan doesn't rely on being perfect on day one. It has three safeguards:</p>
+  <ol class="steps-list">
+    <li><span><b>Built only from what is solid</b>, so it works for the average beginner.</span></li>
+    <li><span><b>You measure yourself</b> (lifts, waist, weight average) every 2 weeks.</span></li>
+    <li><span><b>Pre-written rules</b> tell you exactly what to change when a number stalls. That turns "will it work for me?" into "it adjusts until it does", and you never need a new plan.</span></li>
+  </ol>
+  <p>If you train consistently, hit your protein and sleep, and follow the rules, the realistic expectation is roughly 1–2 kg of muscle and 30–50% stronger lifts in the first 8–12 weeks.</p>
+</section>
+
+<!--gen-->
+<section id="profile"><span class="num">WHO IT'S FOR</span><h2>The plan was built for</h2>
+  <div class="tbl"><table><tbody><tr><td><b>Body</b></td><td>174 cm · ~70 kg · skinny-fat</td></tr><tr><td><b>Now</b></td><td>20–30 push-ups · 3–4 pull-ups · 400 m run in 1:15 · new to the gym</td></tr><tr><td><b>Goal</b></td><td>Overall fitness, visible abs, broader shoulders, better proportions</td></tr><tr><td><b>Food</b></td><td>Vegetarian, hostel mess (spicy, oily), no kitchen, weak digestion; all extra protein must be deliberate</td></tr></tbody></table></div></section>
+<section id="myths"><span class="num">FROM YOUR REELS</span><h2>What your reels got wrong</h2><ul><li><b>Stretch routines that &#x27;fix your belly bulge&#x27; or &#x27;fix rounded shoulders&#x27;</b><br>A 2024 review of 23 trials: stretching did not change posture at all. Strength training did. Those mobility moves are pleasant, so they&#x27;re kept as an optional Sunday routine, minus the promise.</li><li><b>100 squats / knee raises a day for &#x27;no belly in a month&#x27;</b><br>Fat doesn&#x27;t come off the spot you exercise (2021 meta-analysis: zero effect). Your belly shrinks with overall fat loss.</li><li><b>50 kneeling side reaches a day; 50 × 3 burpees</b><br>Spot reduction again, and a conditioning stunt. Your three swims already cover conditioning.</li><li><b>&#x27;Your body can only use ~30 g of protein per meal&#x27;</b><br>Not true: a 2023 study fed 100 g at once and muscle building kept going for 12 hours. Spread protein out because it&#x27;s easier on your stomach, not because the rest is wasted.</li><li><b>The trap-bar deadlift clip</b><br>Great story, but the lift in the clip is done with a rounded back. Not a technique demo. Replaced with a coach&#x27;s demo.</li></ul></section>
+<section id="demos"><span class="num">DEMOS</span><h2>Where each demo comes from</h2>
+  <div class="tbl"><table><thead><tr><th>Exercise</th><th>Demo and cue sources</th></tr></thead><tbody><tr><td>Goblet squat</td><td>Start → end position (free-exercise-db)</td></tr><tr><td>Barbell back squat</td><td>Demo: <a href="https://youtu.be/i7J5h7BJ07g" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP, Squat University</td></tr><tr><td>Lat pulldown</td><td>Demo: <a href="https://youtu.be/EUIri47Epcg" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP (2 videos)</td></tr><tr><td>Barbell bench press</td><td>Demo: <a href="https://youtu.be/gMgvBspQ9lk" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Lying leg curl</td><td>Demo: <a href="https://youtu.be/n5WDXD_mpVY" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Romanian deadlift</td><td>Demo: <a href="https://youtu.be/_oyxCn2iSjU" target="_blank" rel="noopener">Jeff Nippard</a> · cues agreed by Nippard, Squat University</td></tr><tr><td>Kneeling cable crunch</td><td>Demo: <a href="https://youtu.be/6GMKPQVERzw" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by RP, Nippard</td></tr><tr><td>Dumbbell lateral raise</td><td>Demo: <a href="https://youtu.be/OuG1smZTsQQ" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP (3 videos)</td></tr><tr><td>Cable face pull</td><td>Demo: <a href="https://youtu.be/-MODnZdnmAQ" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Incline dumbbell curl</td><td>Demo: <a href="https://youtu.be/aTYlqC_JacQ" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard (2 videos), RP</td></tr><tr><td>Rope triceps pushdown</td><td>Demo: <a href="https://youtu.be/-xa-6cQaZKY" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Calf raise</td><td>Demo: <a href="https://youtu.be/N3awlEyTY98" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Push-up</td><td>Demo: <a href="https://youtu.be/mm6_WcoCVTA" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Squat University, RP (2 videos)</td></tr><tr><td>Bear-plank shoulder taps</td><td>From a saved Instagram reel</td></tr><tr><td>Trap-bar deadlift</td><td>Demo: <a href="https://youtu.be/v709aJKv-gM" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, Squat University (hinge principles)</td></tr><tr><td>Pull-up</td><td>Demo: <a href="https://youtu.be/iWpoegdfgtc" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP, Squat University</td></tr><tr><td>Incline dumbbell press</td><td>Demo: <a href="https://youtu.be/5CECBjd7HLQ" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by RP (2 videos)</td></tr><tr><td>Seated cable row</td><td>Demo: <a href="https://youtu.be/UCXxvVItLoM" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Split squat</td><td>Demo: <a href="https://youtu.be/jNihW0WDIL4" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Squat University (2 videos), RP</td></tr><tr><td>Deficit push-up</td><td>Demo: <a href="https://youtu.be/gmNlqsE3Onc" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by RP, Squat University</td></tr><tr><td>Seated dumbbell shoulder press</td><td>Demo: <a href="https://youtu.be/HzIiNhHhhtA" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, Squat University</td></tr><tr><td>Chest-supported row</td><td>Demo: <a href="https://youtu.be/0UBRfiO4zDs" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Leg extension</td><td>Demo: <a href="https://youtu.be/m0FOpMEgero" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Cable lateral raise</td><td>Demo: <a href="https://youtu.be/lq7eLC30b9w" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by Nippard, RP</td></tr><tr><td>Hanging knee raise</td><td>Demo: <a href="https://youtu.be/RD_A-Z15ER4" target="_blank" rel="noopener">Renaissance Periodization</a> · cues agreed by RP, Nippard</td></tr><tr><td>90/90 hip switch</td><td>From a saved Instagram reel</td></tr><tr><td>Half-kneeling hip-flexor → hamstring rock</td><td>From a saved Instagram reel</td></tr><tr><td>Thread the needle</td><td>From a saved Instagram reel</td></tr><tr><td>Deep squat hold</td><td>From a saved Instagram reel</td></tr><tr><td>Lunge into forward fold</td><td>From a saved Instagram reel</td></tr></tbody></table></div></section>
+<!--/gen-->
+<section id="sources"><h3>What I couldn't fully verify</h3>
+  <ul class="src">
+    <li>Several papers are paywalled; for those I used abstracts and reputable summaries. The Pelland 2024 volume analysis is a preprint (not yet peer-reviewed).</li>
+    <li>YouTube transcripts are auto-generated; some were auto-translated. I only used cues that were clear and repeated.</li>
+    <li>PubMed counts for very common names (e.g. Wolf, Steele) mix in other people, so they're marked as approximate.</li>
+  </ul>
+</section>
+</div></body></html>

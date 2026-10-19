@@ -1,0 +1,117 @@
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Food</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: phone-first gym log. Sticky day strip, one column of exercise rows, GIF on the left. */
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dce1;
+  --accent:#1f6f8b; --accent-ink:#ffffff; --plate:#c8402f; --swim:#2a7fbf; --chip:#e3eaee;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:2.6rem;letter-spacing:.01em;text-transform:uppercase}
+h2{font-size:1.7rem;text-transform:uppercase;letter-spacing:.02em}
+h3 .clock{font:600 .85rem/1 var(--mono);color:var(--accent);letter-spacing:0;margin-right:4px}
+h3 .rest{text-transform:none;letter-spacing:0;font-weight:500;font-size:.85rem}
+h3{font-size:1.15rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font:600 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{padding-top:28px;display:flex;flex-direction:column;gap:14px}
+.profile{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.95rem}
+.profile dt{font:600 .74rem/1.9 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.profile dd{margin:0;min-width:0}
+.days{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;
+  grid-template-columns:repeat(7,1fr);gap:4px;padding-block:10px;border-bottom:1px solid var(--line)}
+.days button{font:700 1rem/1 var(--display);text-transform:uppercase;letter-spacing:.04em;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:6px;padding:10px 0 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.days button small{font:500 .6rem/1 var(--mono);color:var(--muted);letter-spacing:.02em}
+.days button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.days button[aria-selected="true"] small{color:var(--accent-ink)}
+.days button:focus-visible,.toggle:focus-visible,.gif:focus-visible{outline:3px solid var(--plate);outline-offset:2px}
+.dayhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.dayhead h2{font-size:2.1rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:6px 8px;border-radius:4px;background:var(--chip);color:var(--muted)}
+.tag.swim{background:var(--swim);color:var(--panel)}
+.tag.run{background:var(--plate);color:var(--panel)}
+.block{display:flex;flex-direction:column;gap:10px}
+.ex{display:grid;grid-template-columns:120px 1fr;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+.ex.done{opacity:.55}
+.gif{width:120px;aspect-ratio:1/1;max-width:100%;object-fit:cover;border-radius:5px;background:var(--chip);cursor:zoom-in;border:0;padding:0;display:block}
+.gif img{width:100%;height:100%;object-fit:cover;border-radius:5px;display:block}
+.ex.big{grid-template-columns:1fr}
+.ex.big .gif{width:min(100%,420px);aspect-ratio:auto;cursor:zoom-out}
+.ex.big .gif img{height:auto;object-fit:contain}
+.exbody{display:flex;flex-direction:column;gap:6px;min-width:0}
+.extop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.exname{font:700 1.15rem/1.15 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rx{font:600 .92rem/1.3 var(--mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.does{font-size:.92rem;color:var(--muted)}
+.cues{margin:0;padding-left:18px;font-size:.92rem;display:flex;flex-direction:column;gap:2px}
+.miss{font-size:.85rem;color:var(--plate)}
+.log{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.log input[type=text]{font:500 .9rem var(--mono);width:9.5em;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.lastv{font:600 .85rem/1.3 var(--mono);color:var(--accent)}
+.histbtn{font:600 .75rem/1 var(--mono);background:none;border:1px solid var(--line);color:var(--muted);border-radius:4px;padding:5px 8px;cursor:pointer;align-self:flex-start}
+.histlist{margin:0;padding-left:18px;font:500 .82rem/1.5 var(--mono);color:var(--muted)}
+.hist{display:flex;flex-direction:column;gap:6px}
+.sync{font:500 .75rem/1.3 var(--mono);color:var(--muted)}
+.chk{width:26px;height:26px;accent-color:var(--accent);flex:none;cursor:pointer}
+.src{font:500 .72rem/1.3 var(--mono);color:var(--muted)}
+.src a{color:var(--muted)}
+.note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--swim);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.note.run{border-left-color:var(--plate)}
+.toggle{font:700 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.05em;background:none;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:9px 12px;cursor:pointer;align-self:flex-start}
+section{display:flex;flex-direction:column;gap:14px}
+.steps{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0}
+.steps dt{font:700 1rem/1.4 var(--display);text-transform:uppercase}
+.steps dd{margin:0;min-width:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td.g{font:600 .95rem var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.guide{font:700 1.05rem/1.2 var(--display);text-transform:uppercase;letter-spacing:.03em;align-self:flex-start;padding:10px 14px;border:1px solid var(--accent);border-radius:6px;text-decoration:none}
+.alt{font-size:.85rem;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.nav{display:flex;flex-wrap:wrap;gap:6px}
+.nav a{font:700 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.04em;padding:9px 12px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink);background:var(--panel)}
+.nav a[aria-current]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav a.why{color:var(--muted)}
+.note.warm{border-left-color:var(--accent)}
+.myth{display:flex;flex-direction:column;gap:4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.myth b{font-family:var(--display);text-transform:uppercase;font-size:1.05rem;letter-spacing:.02em}
+@media (max-width:420px){.ex{grid-template-columns:92px 1fr;gap:10px}.gif{width:92px}h1{font-size:2.1rem}
+  .days button{padding:8px 0 6px}.days button small{display:none}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<header><h1>Food</h1><nav class="nav" aria-label="Pages"><a href="index.html">Workout</a><a href="food.html" aria-current=page>Food</a><a href="checkin.html">Check-in</a><a class="why" href="guide.html">How training works</a><a class="why" href="research.html">How it was made</a></nav></header>
+<section id="food"><h2>Daily protein</h2>
+  <p><b>At least 112 g a day</b>, aim 120–140 g. Calories about what you burn (~2,300–2,500 kcal). Mess food gives ~30 g; the rest you add on purpose.</p>
+  <div class="tbl"><table><thead><tr><th>Source</th><th style="text-align:right">Protein</th><th>Notes</th></tr></thead><tbody><tr><td>Whey protein, 1 scoop</td><td class='g'>24 g</td><td>The biggest single fix for a vegetarian. Isolate if milk bloats you. Mix with water, not milk.</td></tr><tr><td>Soya chunks, 50 g dry</td><td class='g'>26 g</td><td>No stove needed: soak in kettle-hot water 15 min, squeeze, rinse twice, add to dal or sabzi. Start with 25 g: it causes gas until your gut adapts.</td></tr><tr><td>Paneer, 100 g</td><td class='g'>18 g</td><td>When the mess serves it, take a double portion.</td></tr><tr><td>Curd, 400 g (2 bowls)</td><td class='g'>14 g</td><td>Lunch and dinner. Easy on the stomach.</td></tr><tr><td>Roasted chana, 50 g</td><td class='g'>10 g</td><td>Snack. Cheap, keeps for weeks in your room.</td></tr><tr><td>Milk, 300 ml</td><td class='g'>10 g</td><td>Skip if it bloats you.</td></tr><tr><td>Sattu, 40 g</td><td class='g'>8 g</td><td>Roasted gram flour: stir into water with salt and lemon. No cooking.</td></tr><tr><td>Peanuts, 30 g (a handful)</td><td class='g'>8 g</td><td>Or 2 spoons of peanut butter.</td></tr><tr><td>Mess dal + roti + rice</td><td class='g'>30 g</td><td>Roughly, across the day. Ask for extra dal.</td></tr></tbody></table></div>
+  <p><b>A day that hits ~120 g, no kitchen:</b> milk at breakfast, whey after the gym, 50 g soaked soya chunks in lunch dal, curd at lunch and dinner, roasted chana and peanuts as snacks, extra dal at both meals. Paneer days are a bonus. (If you eat eggs, 4 boiled eggs add 24 g.)</p>
+  <p><b>Tuesday (fast):</b> milk + semiyan gives ~20–25 g. That's fine: one low day a week barely matters. If your fast allows it, a scoop of whey in the milk brings it to ~45 g.</p></section>
+<section><h2>Digestion</h2>
+  <p>Dry sabzi over gravy, leave the oil layer behind. Curd or buttermilk daily. Spread protein over 3–5 feeds. Walk 10 min after meals. ~3 L water. Pain, or trouble that always follows certain foods → see a doctor.</p></section>
+<section><h2>Sleep</h2><p><b>7½–8 hours.</b> Short sleep costs muscle and keeps fat on, even with perfect training.</p></section>
+<section id="supps"><h2>Supplements</h2><div class='myth'><b>Creatine monohydrate, 3–5 g every day</b><p>The best-supported supplement there is (ISSN 2017, 200+ studies). Vegetarian diets start with lower stores, so you may gain more from it. Any time of day, with water. Plain monohydrate, nothing fancy. Expect ~1 kg of water weight in the first weeks; that&#x27;s muscle water, not fat.</p></div><div class='myth'><b>Whey</b><p>Not magic, just milk protein in powder form, so it is vegetarian. On a vegetarian hostel diet it&#x27;s the easiest way to close the gap; 1 scoop a day is usually enough.</p></div><div class='myth'><b>Vitamin B12 check</b><p>Vegetarians in India are commonly low in B12. Cheap blood test; if low, a doctor will give you a supplement. Low B12 means tiredness that no plan can train through.</p></div><div class='myth'><b>Skip</b><p>BCAAs, fat burners, testosterone boosters, &#x27;mass gainers&#x27;. None are worth your money.</p></div></section>
+</div>
+

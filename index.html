@@ -1,0 +1,590 @@
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hostel Recomp Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: phone-first gym log. Sticky day strip, one column of exercise rows, GIF on the left. */
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dce1;
+  --accent:#1f6f8b; --accent-ink:#ffffff; --plate:#c8402f; --swim:#2a7fbf; --chip:#e3eaee;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:2.6rem;letter-spacing:.01em;text-transform:uppercase}
+h2{font-size:1.7rem;text-transform:uppercase;letter-spacing:.02em}
+h3 .clock{font:600 .85rem/1 var(--mono);color:var(--accent);letter-spacing:0;margin-right:4px}
+h3 .rest{text-transform:none;letter-spacing:0;font-weight:500;font-size:.85rem}
+h3{font-size:1.15rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font:600 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{padding-top:28px;display:flex;flex-direction:column;gap:14px}
+.profile{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.95rem}
+.profile dt{font:600 .74rem/1.9 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.profile dd{margin:0;min-width:0}
+.days{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;
+  grid-template-columns:repeat(7,1fr);gap:4px;padding-block:10px;border-bottom:1px solid var(--line)}
+.days button{font:700 1rem/1 var(--display);text-transform:uppercase;letter-spacing:.04em;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:6px;padding:10px 0 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.days button small{font:500 .6rem/1 var(--mono);color:var(--muted);letter-spacing:.02em}
+.days button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.days button[aria-selected="true"] small{color:var(--accent-ink)}
+.days button:focus-visible,.toggle:focus-visible,.gif:focus-visible{outline:3px solid var(--plate);outline-offset:2px}
+.dayhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.dayhead h2{font-size:2.1rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:6px 8px;border-radius:4px;background:var(--chip);color:var(--muted)}
+.tag.swim{background:var(--swim);color:var(--panel)}
+.tag.run{background:var(--plate);color:var(--panel)}
+.block{display:flex;flex-direction:column;gap:10px}
+.ex{display:grid;grid-template-columns:120px 1fr;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+.ex.done{opacity:.55}
+.gif{width:120px;aspect-ratio:1/1;max-width:100%;object-fit:cover;border-radius:5px;background:var(--chip);cursor:zoom-in;border:0;padding:0;display:block}
+.gif img{width:100%;height:100%;object-fit:cover;border-radius:5px;display:block}
+.ex.big{grid-template-columns:1fr}
+.ex.big .gif{width:min(100%,420px);aspect-ratio:auto;cursor:zoom-out}
+.ex.big .gif img{height:auto;object-fit:contain}
+.exbody{display:flex;flex-direction:column;gap:6px;min-width:0}
+.extop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.exname{font:700 1.15rem/1.15 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rx{font:600 .92rem/1.3 var(--mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.does{font-size:.92rem;color:var(--muted)}
+.cues{margin:0;padding-left:18px;font-size:.92rem;display:flex;flex-direction:column;gap:2px}
+.miss{font-size:.85rem;color:var(--plate)}
+.log{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.log input[type=text]{font:500 .9rem var(--mono);width:9.5em;padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.lastv{font:600 .85rem/1.3 var(--mono);color:var(--accent)}
+.histbtn{font:600 .75rem/1 var(--mono);background:none;border:1px solid var(--line);color:var(--muted);border-radius:4px;padding:5px 8px;cursor:pointer;align-self:flex-start}
+.histlist{margin:0;padding-left:18px;font:500 .82rem/1.5 var(--mono);color:var(--muted)}
+.hist{display:flex;flex-direction:column;gap:6px}
+.sync{font:500 .75rem/1.3 var(--mono);color:var(--muted)}
+.chk{width:26px;height:26px;accent-color:var(--accent);flex:none;cursor:pointer}
+.src{font:500 .72rem/1.3 var(--mono);color:var(--muted)}
+.src a{color:var(--muted)}
+.note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--swim);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.note.run{border-left-color:var(--plate)}
+.toggle{font:700 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.05em;background:none;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:9px 12px;cursor:pointer;align-self:flex-start}
+section{display:flex;flex-direction:column;gap:14px}
+.steps{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0}
+.steps dt{font:700 1rem/1.4 var(--display);text-transform:uppercase}
+.steps dd{margin:0;min-width:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td.g{font:600 .95rem var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.guide{font:700 1.05rem/1.2 var(--display);text-transform:uppercase;letter-spacing:.03em;align-self:flex-start;padding:10px 14px;border:1px solid var(--accent);border-radius:6px;text-decoration:none}
+.alt{font-size:.85rem;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.nav{display:flex;flex-wrap:wrap;gap:6px}
+.nav a{font:700 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.04em;padding:9px 12px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink);background:var(--panel)}
+.nav a[aria-current]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav a.why{color:var(--muted)}
+.note.warm{border-left-color:var(--accent)}
+.myth{display:flex;flex-direction:column;gap:4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.myth b{font-family:var(--display);text-transform:uppercase;font-size:1.05rem;letter-spacing:.02em}
+@media (max-width:420px){.ex{grid-template-columns:92px 1fr;gap:10px}.gif{width:92px}h1{font-size:2.1rem}
+  .days button{padding:8px 0 6px}.days button small{display:none}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="wrap">
+<header><h1>Hostel Recomp Plan</h1><nav class="nav" aria-label="Pages"><a href="index.html" aria-current=page>Workout</a><a href="food.html">Food</a><a href="checkin.html">Check-in</a><a class="why" href="guide.html">How training works</a><a class="why" href="research.html">How it was made</a></nav></header>
+<p class="sync" id="syncstatus" role="status">Loading your log…</p>
+<nav class="days" role="tablist" aria-label="Day of the week"><button type="button" role="tab" data-day="mon" aria-selected="false">Mon<small>A</small></button><button type="button" role="tab" data-day="tue" aria-selected="false">Tue<small>Fast</small></button><button type="button" role="tab" data-day="wed" aria-selected="false">Wed<small>Swim</small></button><button type="button" role="tab" data-day="thu" aria-selected="false">Thu<small>B</small></button><button type="button" role="tab" data-day="fri" aria-selected="false">Fri<small>Swim</small></button><button type="button" role="tab" data-day="sat" aria-selected="false">Sat<small>C</small></button><button type="button" role="tab" data-day="sun" aria-selected="false">Sun<small>Swim</small></button></nav>
+<section class="day" id="day-mon" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Mon</span><h2>Full body A</h2></div>
+  <p class="does">Squat, bench, back, hamstrings</p><div class="tags"><span class="tag">4 PM · ~50 min</span></div>
+  <div class="note warm"><b>Warm-up</b><p>0:00–0:05. 2 min easy cardio (skip it if you walked fast to the gym). Then 2 lighter sets of the first exercise only: ~50% of today&#x27;s weight × 8, ~75% × 4. No long stretching.</p><p>Then work through the pairs by the clock. <a href="#session">How pairs work →</a></p></div><div class="block"><h3><span class="clock">0:05–0:19</span> Pair 1, alternate, 90 s rest between</h3><article class="ex" data-ex="goblet-squat">
+  <button class="gif" type="button" aria-label="Enlarge Goblet squat animation"><img src="gifs/goblet-squat.gif" alt="Goblet squat demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Goblet squat</div><div class="rx">Weeks 1–3: 3 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-mon-0-goblet-squat" aria-label="Mark Goblet squat done"></div>
+    <ul class="cues"><li>Dumbbell held at your chest</li><li>Same rules as the squat: knees follow toes, whole foot on the floor</li><li>Go down slowly and pause 1 s at the bottom while learning</li></ul>
+    <p class="miss">Avoid: Heels lifting; Knees caving in</p>
+    <p class="alt">If it hurts or the machine is taken: Leg press</p>
+    <label class="log" for="w-mon-0-goblet-squat">Today: <input type="text" id="w-mon-0-goblet-squat" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="squat">
+  <button class="gif" type="button" aria-label="Enlarge Barbell back squat animation"><img src="gifs/squat.gif" alt="Barbell back squat demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Barbell back squat</div><div class="rx">Week 4+: 3 × 5–8</div></div>
+      <input class="chk" type="checkbox" id="c-mon-1-squat" aria-label="Mark Barbell back squat done"></div>
+    <ul class="cues"><li>Bar on your upper back; feet about shoulder width, toes slightly out (whatever lets your knees track over your toes)</li><li>Big breath into your belly and sides, hold it through the rep</li><li>Knees go the same direction as your toes; weight across the whole foot (heel, big toe, little toe)</li><li>Back stays neutral: ribs down, chest not collapsing; go as deep as you can with that position</li></ul>
+    <p class="miss">Avoid: Knees caving in; Heels lifting; Dropping down fast and bouncing</p>
+    <p class="alt">If it hurts or the machine is taken: Leg press or hack squat</p>
+    <label class="log" for="w-mon-1-squat">Today: <input type="text" id="w-mon-1-squat" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="lat-pulldown">
+  <button class="gif" type="button" aria-label="Enlarge Lat pulldown animation"><img src="gifs/lat-pulldown.gif" alt="Lat pulldown demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Lat pulldown</div><div class="rx">3 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-mon-2-lat-pulldown" aria-label="Mark Lat pulldown done"></div>
+    <ul class="cues"><li>Overhand grip about 1.5× shoulder width (try a few; no magic grip)</li><li>Pull to the upper chest, elbows down and back</li><li>Let the bar go all the way up for a full stretch every rep</li><li>Small lean back is fine; no swinging</li></ul>
+    <p class="miss">Avoid: Only doing the top half; Throwing the body back to move the weight</p>
+    <p class="alt">If it hurts or the machine is taken: Assisted pull-up machine</p>
+    <label class="log" for="w-mon-2-lat-pulldown">Today: <input type="text" id="w-mon-2-lat-pulldown" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:19–0:33</span> Pair 2, alternate, 90 s rest between</h3><article class="ex" data-ex="bench">
+  <button class="gif" type="button" aria-label="Enlarge Barbell bench press animation"><img src="gifs/bench.gif" alt="Barbell bench press demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Barbell bench press</div><div class="rx">3 × 5–8</div></div>
+      <input class="chk" type="checkbox" id="c-mon-0-bench" aria-label="Mark Barbell bench press done"></div>
+    <ul class="cues"><li>Shoulder blades pulled back and down before you unrack; small arch, chest stays high</li><li>Feet planted, butt on the bench, eyes under the bar</li><li>Grip a little wider than shoulders (never past ~1.5×); wrists stacked over elbows</li><li>Lower under control to around nipple line, light touch, press to lockout</li></ul>
+    <p class="miss">Avoid: Bouncing off the chest; Flat back with shoulders rolled forward</p>
+    <p class="alt">If it hurts or the machine is taken: Dumbbell bench press, or machine chest press</p>
+    <label class="log" for="w-mon-0-bench">Today: <input type="text" id="w-mon-0-bench" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="leg-curl">
+  <button class="gif" type="button" aria-label="Enlarge Lying leg curl animation"><img src="gifs/leg-curl.gif" alt="Lying leg curl demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Lying leg curl</div><div class="rx">3 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-mon-1-leg-curl" aria-label="Mark Lying leg curl done"></div>
+    <ul class="cues"><li>Hips pressed into the pad</li><li>Curl until the pad nearly touches your butt; lower all the way</li><li>Control the lowering, no swinging</li></ul>
+    <p class="miss">Avoid: Hips lifting; Half reps</p>
+    <p class="alt">If it hurts or the machine is taken: Seated leg curl</p>
+    <label class="log" for="w-mon-1-leg-curl">Today: <input type="text" id="w-mon-1-leg-curl" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:33–0:47</span> Pair 3, alternate, 60–90 s rest</h3><article class="ex" data-ex="rdl">
+  <button class="gif" type="button" aria-label="Enlarge Romanian deadlift animation"><img src="gifs/rdl.gif" alt="Romanian deadlift demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Romanian deadlift</div><div class="rx">3 × 8–10</div></div>
+      <input class="chk" type="checkbox" id="c-mon-0-rdl" aria-label="Mark Romanian deadlift done"></div>
+    <ul class="cues"><li>Push your hips BACK, chest comes forward; soft knees that don&#x27;t travel forward</li><li>Bar slides down your thighs, close to your legs</li><li>Back stays flat; stop when your hamstrings are tight, usually around mid-shin</li><li>The plates should not touch the floor for most people</li></ul>
+    <p class="miss">Avoid: Going to the floor and rounding the lower back; Bending the knees into a squat</p>
+    <p class="alt">If it hurts or the machine is taken: Dumbbell RDL, or 45° back extension</p>
+    <label class="log" for="w-mon-0-rdl">Today: <input type="text" id="w-mon-0-rdl" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="cable-crunch">
+  <button class="gif" type="button" aria-label="Enlarge Kneeling cable crunch animation"><img src="gifs/cable-crunch.gif" alt="Kneeling cable crunch demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Kneeling cable crunch</div><div class="rx">3 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-mon-1-cable-crunch" aria-label="Mark Kneeling cable crunch done"></div>
+    <ul class="cues"><li>Rope beside your head, hips stay still</li><li>Curl your ribs toward your hips (round your spine), then stretch back up</li><li>10–15 reps, add weight like any lift</li></ul>
+    <p class="miss">Avoid: Sitting back on your heels to pull with your body weight</p>
+    <p class="alt">If it hurts or the machine is taken: Machine crunch or weighted floor crunch</p>
+    <label class="log" for="w-mon-1-cable-crunch">Today: <input type="text" id="w-mon-1-cable-crunch" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><button class="toggle reset" type="button" data-day="mon">Clear Mon checkmarks</button>
+</section><section class="day" id="day-tue" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Tue</span><h2>Light day (fast)</h2></div>
+  <p class="does">Optional. Small muscles only, light weights: nothing heavy while you&#x27;re fasting</p><div class="tags"><span class="tag">4 PM · ~30 min</span></div>
+  <div class="note run"><b>Fast day</b><p>Lifting heavy after ~20 hours without food invites dizziness and bad reps, so the squats and deadlifts are on fed days. Today is light weights only, and optional: skip it entirely if you feel weak and nothing is lost. Sip water if your fast allows it. Feel light-headed → stop and sit down. Eat your semiyan and milk soon after the gym.</p></div><div class="note warm"><b>Warm-up</b><p>0:00–0:05. 2 min easy cardio (skip it if you walked fast to the gym). Then 2 lighter sets of the first exercise only: ~50% of today&#x27;s weight × 8, ~75% × 4. No long stretching.</p><p>Then work through the pairs by the clock. <a href="#session">How pairs work →</a></p></div><div class="block"><h3><span class="clock">0:05–0:15</span> Pair 1, alternate, 60 s rest</h3><article class="ex" data-ex="lateral-raise">
+  <button class="gif" type="button" aria-label="Enlarge Dumbbell lateral raise animation"><img src="gifs/lateral-raise.gif" alt="Dumbbell lateral raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Dumbbell lateral raise</div><div class="rx">3 × 12–20</div></div>
+      <input class="chk" type="checkbox" id="c-tue-0-lateral-raise" aria-label="Mark Dumbbell lateral raise done"></div>
+    <ul class="cues"><li>Light weight, 12–20+ reps; this is not a heavy lift</li><li>Lead with the elbows, slightly in front of your body (15–30°)</li><li>Up to about shoulder height, a bit higher if it feels fine</li><li>Slight elbow bend, thumbs level; lower under control</li></ul>
+    <p class="miss">Avoid: Swinging the body; Shrugging the weight up with your traps</p>
+    <p class="alt">If it hurts or the machine is taken: Cable or machine lateral raise</p>
+    <label class="log" for="w-tue-0-lateral-raise">Today: <input type="text" id="w-tue-0-lateral-raise" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="face-pull">
+  <button class="gif" type="button" aria-label="Enlarge Cable face pull animation"><img src="gifs/face-pull.gif" alt="Cable face pull demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Cable face pull</div><div class="rx">2 × 15–20</div></div>
+      <input class="chk" type="checkbox" id="c-tue-1-face-pull" aria-label="Mark Cable face pull done"></div>
+    <ul class="cues"><li>Rope at face height, thumbs toward you</li><li>Pull toward your forehead, elbows high and back, hands end beside your ears</li><li>Arms straight at the start, brief pause at the top</li><li>Light weight, 15–20 reps</li></ul>
+    <p class="miss">Avoid: Leaning back to move more weight; Short reps that stop at the chin</p>
+    <p class="alt">If it hurts or the machine is taken: Rear-delt machine fly, or bent-over dumbbell rear raise</p>
+    <label class="log" for="w-tue-1-face-pull">Today: <input type="text" id="w-tue-1-face-pull" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:15–0:25</span> Pair 2, alternate, 60 s rest</h3><article class="ex" data-ex="curl">
+  <button class="gif" type="button" aria-label="Enlarge Incline dumbbell curl animation"><img src="gifs/curl.gif" alt="Incline dumbbell curl demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Incline dumbbell curl</div><div class="rx">2 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-tue-0-curl" aria-label="Mark Incline dumbbell curl done"></div>
+    <ul class="cues"><li>Bench at ~45°, arms hang straight down behind you</li><li>Curl without moving your elbows forward much; turn palms up as you lift</li><li>Lower all the way down under control</li><li>8–15 reps; this is not a heavy lift</li></ul>
+    <p class="miss">Avoid: Swinging; Stopping before full arm extension</p>
+    <p class="alt">If it hurts or the machine is taken: Standing dumbbell curl or cable curl</p>
+    <label class="log" for="w-tue-0-curl">Today: <input type="text" id="w-tue-0-curl" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="pushdown">
+  <button class="gif" type="button" aria-label="Enlarge Rope triceps pushdown animation"><img src="gifs/pushdown.gif" alt="Rope triceps pushdown demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Rope triceps pushdown</div><div class="rx">2 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-tue-1-pushdown" aria-label="Mark Rope triceps pushdown done"></div>
+    <ul class="cues"><li>Elbows near your sides; full lockout at the bottom</li><li>Let the rope come all the way back up each rep</li><li>Elbows can stay still or drift slightly; pick one and keep it the same</li></ul>
+    <p class="miss">Avoid: Half reps with heavy weight; Leaning over the rope</p>
+    <p class="alt">If it hurts or the machine is taken: Overhead cable triceps extension (hits the long head even more)</p>
+    <label class="log" for="w-tue-1-pushdown">Today: <input type="text" id="w-tue-1-pushdown" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:25–0:30</span> Finish</h3><article class="ex" data-ex="calf-raise">
+  <button class="gif" type="button" aria-label="Enlarge Calf raise animation"><img src="gifs/calf-raise.gif" alt="Calf raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Calf raise</div><div class="rx">3 × 10–15, 60 s rest</div></div>
+      <input class="chk" type="checkbox" id="c-tue-0-calf-raise" aria-label="Mark Calf raise done"></div>
+    <ul class="cues"><li>Balls of your feet on the edge, knees straight</li><li>Pause 1–2 s at the BOTTOM in the full stretch (stops the bounce)</li><li>Rise up onto the balls of your feet, squeeze, lower over ~2 s</li></ul>
+    <p class="miss">Avoid: Bouncing out of the bottom; Half reps</p>
+    <p class="alt">If it hurts or the machine is taken: Single-leg calf raise on a step holding a dumbbell</p>
+    <label class="log" for="w-tue-0-calf-raise">Today: <input type="text" id="w-tue-0-calf-raise" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><button class="toggle reset" type="button" data-day="tue">Clear Tue checkmarks</button>
+</section><section class="day" id="day-wed" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Wed</span><h2>Swim + room session</h2></div>
+  <p class="does">No gym today (swim is at 4). 10 min in your room, any time</p><div class="tags"><span class="tag">10 min, any time</span><span class="tag swim">Swim 4–5 PM</span></div>
+  <div class="block"><h3>In your room, no equipment</h3><article class="ex" data-ex="pushup">
+  <button class="gif" type="button" aria-label="Enlarge Push-up animation"><img src="gifs/pushup.gif" alt="Push-up demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Push-up</div><div class="rx">2 × stop 2 short of failure</div></div>
+      <input class="chk" type="checkbox" id="c-wed-0-pushup" aria-label="Mark Push-up done"></div>
+    <ul class="cues"><li>Hands slightly wider than shoulders</li><li>Body in a straight line, glutes and abs tight</li><li>Elbows about 45° from your body, not flared straight out</li><li>Chest lightly touches the floor, full lockout at the top; ~1 s down</li></ul>
+    <p class="miss">Avoid: Hips sagging; Half reps</p>
+    <p class="alt">If it hurts or the machine is taken: Incline push-up on a bench if you can&#x27;t do 8 good reps</p>
+    
+  </div>
+</article>
+<article class="ex" data-ex="bear-tap">
+  <button class="gif" type="button" aria-label="Enlarge Bear-plank shoulder taps animation"><img src="gifs/bear-tap.gif" alt="Bear-plank shoulder taps demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Bear-plank shoulder taps</div><div class="rx">2 × 30 s hold + 20 taps</div></div>
+      <input class="chk" type="checkbox" id="c-wed-1-bear-tap" aria-label="Mark Bear-plank shoulder taps done"></div>
+    <ul class="cues"><li>Hands under shoulders, knees just off the floor, back flat</li><li>Tap the opposite shoulder without your hips moving</li></ul>
+    <p class="miss">Avoid: Hips swaying side to side</p>
+    <p class="alt">If it hurts or the machine is taken: Side plank</p>
+    
+  </div>
+</article></div><div class="note"><b>Swim 4–5 PM</b><p>Any pace. Do the room session before or after, whenever suits you.</p></div><button class="toggle reset" type="button" data-day="wed">Clear Wed checkmarks</button>
+</section><section class="day" id="day-thu" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Thu</span><h2>Full body B</h2></div>
+  <p class="does">Deadlift, pull-ups, upper chest, single leg</p><div class="tags"><span class="tag">4 PM · ~50 min</span></div>
+  <div class="note warm"><b>Warm-up</b><p>0:00–0:05. 2 min easy cardio (skip it if you walked fast to the gym). Then 2 lighter sets of the first exercise only: ~50% of today&#x27;s weight × 8, ~75% × 4. No long stretching.</p><p>Then work through the pairs by the clock. <a href="#session">How pairs work →</a></p></div><div class="block"><h3><span class="clock">0:05–0:19</span> Pair 1, alternate, 90 s rest between</h3><article class="ex" data-ex="trap-deadlift">
+  <button class="gif" type="button" aria-label="Enlarge Trap-bar deadlift animation"><img src="gifs/trap-deadlift.gif" alt="Trap-bar deadlift demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Trap-bar deadlift</div><div class="rx">3 × 5–8</div></div>
+      <input class="chk" type="checkbox" id="c-thu-0-trap-deadlift" aria-label="Mark Trap-bar deadlift done"></div>
+    <ul class="cues"><li>Stand in the middle of the bar, handles in line with the middle of your feet</li><li>Hips back and down until you can grab the handles, chest up, back flat</li><li>Big breath, push the floor away, stand tall; lower the same way</li><li>Lower back must not round; if it does, the weight is too heavy</li></ul>
+    <p class="miss">Avoid: Rounded lower back (what the reel showed); Hips shooting up first</p>
+    <p class="alt">If it hurts or the machine is taken: Leg press + an extra set of RDL</p>
+    <label class="log" for="w-thu-0-trap-deadlift">Today: <input type="text" id="w-thu-0-trap-deadlift" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="pullup">
+  <button class="gif" type="button" aria-label="Enlarge Pull-up animation"><img src="gifs/pullup.gif" alt="Pull-up demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Pull-up</div><div class="rx">3 × 5–10 (assisted if needed)</div></div>
+      <input class="chk" type="checkbox" id="c-thu-1-pullup" aria-label="Mark Pull-up done"></div>
+    <ul class="cues"><li>Overhand grip about 1.5× shoulder width; grip the bar hard</li><li>Start from a full hang; pull shoulders down and elbows toward your back pockets</li><li>Chin clearly over the bar; a rep that doesn&#x27;t make it doesn&#x27;t count</li><li>Lower under control to a full hang; legs still, no kipping</li></ul>
+    <p class="miss">Avoid: Half reps; Swinging the legs</p>
+    <p class="alt">If it hurts or the machine is taken: Assisted pull-up machine or lat pulldown; reduce assistance over time</p>
+    <label class="log" for="w-thu-1-pullup">Today: <input type="text" id="w-thu-1-pullup" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:19–0:33</span> Pair 2, alternate, 90 s rest between</h3><article class="ex" data-ex="incline-db">
+  <button class="gif" type="button" aria-label="Enlarge Incline dumbbell press animation"><img src="gifs/incline-db.gif" alt="Incline dumbbell press demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Incline dumbbell press</div><div class="rx">3 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-thu-0-incline-db" aria-label="Mark Incline dumbbell press done"></div>
+    <ul class="cues"><li>Bench at 30–45°; adjust to where you feel the upper chest</li><li>Feet flat, butt stays on the seat, chest up</li><li>Shoulder blades down but not pinched hard back</li><li>Lower until the dumbbells lightly touch the outside of your shoulders, then press to full lockout</li></ul>
+    <p class="miss">Avoid: Stopping halfway down; Butt lifting off the seat</p>
+    <p class="alt">If it hurts or the machine is taken: Incline machine press</p>
+    <label class="log" for="w-thu-0-incline-db">Today: <input type="text" id="w-thu-0-incline-db" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="cable-row">
+  <button class="gif" type="button" aria-label="Enlarge Seated cable row animation"><img src="gifs/cable-row.gif" alt="Seated cable row demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Seated cable row</div><div class="rx">3 × 10–12</div></div>
+      <input class="chk" type="checkbox" id="c-thu-1-cable-row" aria-label="Mark Seated cable row done"></div>
+    <ul class="cues"><li>Sit tall, slight knee bend</li><li>Let the handle pull your arms long and shoulders forward for the stretch</li><li>Pull to your lower ribs, elbows close; chest up</li><li>Torso moves only a little</li></ul>
+    <p class="miss">Avoid: Rocking back and forth like rowing a boat</p>
+    <p class="alt">If it hurts or the machine is taken: Machine row</p>
+    <label class="log" for="w-thu-1-cable-row">Today: <input type="text" id="w-thu-1-cable-row" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:33–0:45</span> Pair 3, alternate, 60–90 s rest</h3><article class="ex" data-ex="split-squat">
+  <button class="gif" type="button" aria-label="Enlarge Split squat animation"><img src="gifs/split-squat.gif" alt="Split squat demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Split squat</div><div class="rx">2 × 8–12 each leg</div></div>
+      <input class="chk" type="checkbox" id="c-thu-0-split-squat" aria-label="Mark Split squat done"></div>
+    <ul class="cues"><li>Long stance; about 90% of your weight on the front foot</li><li>Drop the back knee straight down until it nearly touches the floor</li><li>Torso and front shin roughly parallel</li><li>Progression: rear foot on a low step (a few plates), not a full bench</li></ul>
+    <p class="miss">Avoid: Pushing off the back leg; Front knee caving in</p>
+    <p class="alt">If it hurts or the machine is taken: Walking lunge or leg press</p>
+    <label class="log" for="w-thu-0-split-squat">Today: <input type="text" id="w-thu-0-split-squat" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="lateral-raise">
+  <button class="gif" type="button" aria-label="Enlarge Dumbbell lateral raise animation"><img src="gifs/lateral-raise.gif" alt="Dumbbell lateral raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Dumbbell lateral raise</div><div class="rx">3 × 12–20</div></div>
+      <input class="chk" type="checkbox" id="c-thu-1-lateral-raise" aria-label="Mark Dumbbell lateral raise done"></div>
+    <ul class="cues"><li>Light weight, 12–20+ reps; this is not a heavy lift</li><li>Lead with the elbows, slightly in front of your body (15–30°)</li><li>Up to about shoulder height, a bit higher if it feels fine</li><li>Slight elbow bend, thumbs level; lower under control</li></ul>
+    <p class="miss">Avoid: Swinging the body; Shrugging the weight up with your traps</p>
+    <p class="alt">If it hurts or the machine is taken: Cable or machine lateral raise</p>
+    <label class="log" for="w-thu-1-lateral-raise">Today: <input type="text" id="w-thu-1-lateral-raise" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="note run"><b>Optional: easy run, outside the gym slot</b><p>Any time Thursday that suits you, outdoors. Skip it if busy: your three swims already cover cardio.</p><dl class="steps"><dt>Weeks 1–2</dt><dd>15–20 min easy. You should be able to talk.</dd><dt>Weeks 3–6</dt><dd>25–30 min easy, or 3–4 km.</dd><dt>Week 7+</dt><dd>Alternate: 5 km easy, or 6 × 400 m fast (your 1:15 pace) with 90 s walk.</dd></dl></div><button class="toggle reset" type="button" data-day="thu">Clear Thu checkmarks</button>
+</section><section class="day" id="day-fri" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Fri</span><h2>Swim + room session</h2></div>
+  <p class="does">No gym today (swim is at 4). 10 min in your room, any time</p><div class="tags"><span class="tag">10 min, any time</span><span class="tag swim">Swim 4–5 PM</span></div>
+  <div class="block"><h3>In your room, two stacks of books or bricks</h3><article class="ex" data-ex="deficit-pushup">
+  <button class="gif" type="button" aria-label="Enlarge Deficit push-up animation"><img src="gifs/deficit-pushup.gif" alt="Deficit push-up demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Deficit push-up</div><div class="rx">2 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-fri-0-deficit-pushup" aria-label="Mark Deficit push-up done"></div>
+    <ul class="cues"><li>Hands on two plates/handles/bricks</li><li>Same straight line as a push-up</li><li>Go as deep as your shoulders allow, pause lightly, press up</li></ul>
+    <p class="miss">Avoid: Hips sagging at the bottom (what the reel showed)</p>
+    <p class="alt">If it hurts or the machine is taken: Normal push-up</p>
+    
+  </div>
+</article></div><div class="note"><b>Swim 4–5 PM</b><p>Legs are fresh (lower day is tomorrow), so this can be your harder swim.</p></div><button class="toggle reset" type="button" data-day="fri">Clear Fri checkmarks</button>
+</section><section class="day" id="day-sat" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Sat</span><h2>Full body C</h2></div>
+  <p class="does">Overhead press, rows, quads, hamstrings, abs</p><div class="tags"><span class="tag">4 PM · ~45 min</span></div>
+  <div class="note warm"><b>Warm-up</b><p>0:00–0:05. 2 min easy cardio (skip it if you walked fast to the gym). Then 2 lighter sets of the first exercise only: ~50% of today&#x27;s weight × 8, ~75% × 4. No long stretching.</p><p>Then work through the pairs by the clock. <a href="#session">How pairs work →</a></p></div><div class="block"><h3><span class="clock">0:05–0:19</span> Pair 1, alternate, 90 s rest between</h3><article class="ex" data-ex="ohp">
+  <button class="gif" type="button" aria-label="Enlarge Seated dumbbell shoulder press animation"><img src="gifs/ohp.gif" alt="Seated dumbbell shoulder press demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Seated dumbbell shoulder press</div><div class="rx">3 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-sat-0-ohp" aria-label="Mark Seated dumbbell shoulder press done"></div>
+    <ul class="cues"><li>Start at ear/chin height, elbows slightly in front of you (about 45°), not flared straight out</li><li>Press straight up to lockout</li><li>Ribs down, back stays on the pad</li><li>Same depth every rep</li></ul>
+    <p class="miss">Avoid: Shrugging up to start the press; Arching the lower back to push</p>
+    <p class="alt">If it hurts or the machine is taken: Machine shoulder press. Shoulder pain → stop and use lateral raises only for now</p>
+    <label class="log" for="w-sat-0-ohp">Today: <input type="text" id="w-sat-0-ohp" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="chest-row">
+  <button class="gif" type="button" aria-label="Enlarge Chest-supported row animation"><img src="gifs/chest-row.gif" alt="Chest-supported row demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Chest-supported row</div><div class="rx">3 × 8–12</div></div>
+      <input class="chk" type="checkbox" id="c-sat-1-chest-row" aria-label="Mark Chest-supported row done"></div>
+    <ul class="cues"><li>Chest on the pad, let the weights hang for a full stretch (shoulder blades move forward)</li><li>Pull elbows back toward your hips, chest stays on the pad</li><li>Squeeze 1 s at the top, then lower slowly</li></ul>
+    <p class="miss">Avoid: Lifting the chest off the pad to heave the weight; Short reps</p>
+    <p class="alt">If it hurts or the machine is taken: Machine row, or one-arm dumbbell row</p>
+    <label class="log" for="w-sat-1-chest-row">Today: <input type="text" id="w-sat-1-chest-row" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:19–0:31</span> Pair 2, alternate, 60–90 s rest</h3><article class="ex" data-ex="leg-ext">
+  <button class="gif" type="button" aria-label="Enlarge Leg extension animation"><img src="gifs/leg-ext.gif" alt="Leg extension demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Leg extension</div><div class="rx">3 × 12–15</div></div>
+      <input class="chk" type="checkbox" id="c-sat-0-leg-ext" aria-label="Mark Leg extension done"></div>
+    <ul class="cues"><li>Knee lined up with the machine&#x27;s pivot</li><li>Straighten fully, squeeze 1 s, lower under control</li><li>12–20 reps</li></ul>
+    <p class="miss">Avoid: Kicking the weight up</p>
+    <p class="alt">If it hurts or the machine is taken: Extra set of split squats</p>
+    <label class="log" for="w-sat-0-leg-ext">Today: <input type="text" id="w-sat-0-leg-ext" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="leg-curl">
+  <button class="gif" type="button" aria-label="Enlarge Lying leg curl animation"><img src="gifs/leg-curl.gif" alt="Lying leg curl demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Lying leg curl</div><div class="rx">3 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-sat-1-leg-curl" aria-label="Mark Lying leg curl done"></div>
+    <ul class="cues"><li>Hips pressed into the pad</li><li>Curl until the pad nearly touches your butt; lower all the way</li><li>Control the lowering, no swinging</li></ul>
+    <p class="miss">Avoid: Hips lifting; Half reps</p>
+    <p class="alt">If it hurts or the machine is taken: Seated leg curl</p>
+    <label class="log" for="w-sat-1-leg-curl">Today: <input type="text" id="w-sat-1-leg-curl" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><div class="block"><h3><span class="clock">0:31–0:45</span> Round of 3, one after another, 60 s rest</h3><article class="ex" data-ex="cable-lateral">
+  <button class="gif" type="button" aria-label="Enlarge Cable lateral raise animation"><img src="gifs/cable-lateral.gif" alt="Cable lateral raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Cable lateral raise</div><div class="rx">3 × 12–20</div></div>
+      <input class="chk" type="checkbox" id="c-sat-0-cable-lateral" aria-label="Mark Cable lateral raise done"></div>
+    <ul class="cues"><li>Cable at hand height or lowest setting, hold the machine with the other hand</li><li>Lean slightly away; lead with the elbow out to the side</li><li>Up to shoulder height, lower slowly</li></ul>
+    <p class="miss">Avoid: Turning it into a shrug</p>
+    <p class="alt">If it hurts or the machine is taken: Dumbbell lateral raise</p>
+    <label class="log" for="w-sat-0-cable-lateral">Today: <input type="text" id="w-sat-0-cable-lateral" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="calf-raise">
+  <button class="gif" type="button" aria-label="Enlarge Calf raise animation"><img src="gifs/calf-raise.gif" alt="Calf raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Calf raise</div><div class="rx">2 × 10–15</div></div>
+      <input class="chk" type="checkbox" id="c-sat-1-calf-raise" aria-label="Mark Calf raise done"></div>
+    <ul class="cues"><li>Balls of your feet on the edge, knees straight</li><li>Pause 1–2 s at the BOTTOM in the full stretch (stops the bounce)</li><li>Rise up onto the balls of your feet, squeeze, lower over ~2 s</li></ul>
+    <p class="miss">Avoid: Bouncing out of the bottom; Half reps</p>
+    <p class="alt">If it hurts or the machine is taken: Single-leg calf raise on a step holding a dumbbell</p>
+    <label class="log" for="w-sat-1-calf-raise">Today: <input type="text" id="w-sat-1-calf-raise" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article>
+<article class="ex" data-ex="hanging-knee-raise">
+  <button class="gif" type="button" aria-label="Enlarge Hanging knee raise animation"><img src="gifs/hanging-knee-raise.gif" alt="Hanging knee raise demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Hanging knee raise</div><div class="rx">3 × 8–15</div></div>
+      <input class="chk" type="checkbox" id="c-sat-2-hanging-knee-raise" aria-label="Mark Hanging knee raise done"></div>
+    <ul class="cues"><li>Hang still; curl your pelvis up, knees toward your chest</li><li>Lower slowly (the lowering builds as much as the lifting)</li><li>When 15 good reps is easy, straighten the legs a bit more</li></ul>
+    <p class="miss">Avoid: Swinging</p>
+    <p class="alt">If it hurts or the machine is taken: Lying leg raise or captain&#x27;s-chair knee raise</p>
+    <label class="log" for="w-sat-2-hanging-knee-raise">Today: <input type="text" id="w-sat-2-hanging-knee-raise" class="logv" placeholder="kg × reps" autocomplete="off"></label><div class="hist"></div>
+  </div>
+</article></div><button class="toggle reset" type="button" data-day="sat">Clear Sat checkmarks</button>
+</section><section class="day" id="day-sun" role="tabpanel" hidden>
+  <div class="dayhead"><span class="eyebrow">Sun</span><h2>Swim + rest</h2></div>
+  <p class="does">Gym closed: recover</p><div class="tags"><span class="tag">Swim 4–5 PM</span><span class="tag swim">Swim 4–5 PM</span></div>
+  <div class="block"><h3>Optional mobility, 10 min (from your reels)</h3><p class="does">Feels good and keeps you moving. It won't change your posture or your belly; strength training and fat loss do that.</p><button class="toggle wtoggle" type="button">Show routine</button><div class="block" hidden><article class="ex" data-ex="hip-9090">
+  <button class="gif" type="button" aria-label="Enlarge 90/90 hip switch animation"><img src="gifs/hip-9090.gif" alt="90/90 hip switch demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">90/90 hip switch</div><div class="rx">10 switches</div></div>
+      <input class="chk" type="checkbox" id="c-sun-m-0-hip-9090" aria-label="Mark 90/90 hip switch done"></div>
+    <ul class="cues"><li>Both knees bent at 90°, front shin and back shin square</li><li>Sit tall; switch sides by rotating the knees, not by leaning back on hands once you can</li></ul>
+    <p class="miss">Avoid: Rounding the lower back to fake range</p>
+    
+    
+  </div>
+</article>
+<article class="ex" data-ex="hip-flexor-ham">
+  <button class="gif" type="button" aria-label="Enlarge Half-kneeling hip-flexor → hamstring rock animation"><img src="gifs/hip-flexor-ham.gif" alt="Half-kneeling hip-flexor → hamstring rock demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Half-kneeling hip-flexor → hamstring rock</div><div class="rx">30 s each side</div></div>
+      <input class="chk" type="checkbox" id="c-sun-m-1-hip-flexor-ham" aria-label="Mark Half-kneeling hip-flexor → hamstring rock done"></div>
+    <ul class="cues"><li>Squeeze the glute of the back leg before you lean forward</li><li>Rock back, straighten the front leg, hinge over it with a flat back</li></ul>
+    <p class="miss">Avoid: Arching the lower back instead of tucking the tailbone</p>
+    
+    
+  </div>
+</article>
+<article class="ex" data-ex="thread-needle">
+  <button class="gif" type="button" aria-label="Enlarge Thread the needle animation"><img src="gifs/thread-needle.gif" alt="Thread the needle demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Thread the needle</div><div class="rx">6 each side</div></div>
+      <input class="chk" type="checkbox" id="c-sun-m-2-thread-needle" aria-label="Mark Thread the needle done"></div>
+    <ul class="cues"><li>Slide one arm under the body, shoulder and temple to the floor</li><li>Then open that arm up to the ceiling and follow it with your eyes</li></ul>
+    <p class="miss">Avoid: Moving the hips instead of the upper back</p>
+    
+    
+  </div>
+</article>
+<article class="ex" data-ex="deep-squat-hold">
+  <button class="gif" type="button" aria-label="Enlarge Deep squat hold animation"><img src="gifs/deep-squat-hold.gif" alt="Deep squat hold demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Deep squat hold</div><div class="rx">45 s</div></div>
+      <input class="chk" type="checkbox" id="c-sun-m-3-deep-squat-hold" aria-label="Mark Deep squat hold done"></div>
+    <ul class="cues"><li>Heels down, chest up, elbows push knees out</li><li>Hold onto a rack if your heels lift</li></ul>
+    <p class="miss">Avoid: Heels coming up</p>
+    
+    
+  </div>
+</article>
+<article class="ex" data-ex="lunge-fold">
+  <button class="gif" type="button" aria-label="Enlarge Lunge into forward fold animation"><img src="gifs/lunge-fold.gif" alt="Lunge into forward fold demonstration" loading="lazy"></button>
+  <div class="exbody">
+    <div class="extop"><div><div class="exname">Lunge into forward fold</div><div class="rx">1 min</div></div>
+      <input class="chk" type="checkbox" id="c-sun-m-4-lunge-fold" aria-label="Mark Lunge into forward fold done"></div>
+    <ul class="cues"><li>Step back to a lunge, then straighten both legs and fold</li><li>Slow and controlled, both sides</li></ul>
+    <p class="miss">Avoid: Rushing it</p>
+    
+    
+  </div>
+</article></div></div><div class="note"><b>Swim 4–5 PM</b><p>Your longest, easiest swim of the week.</p></div>
+</section>
+<section id="session"><h2>How a session works</h2><dl class="steps"><dt>Pairs</dt><dd>Each block is a pair. Do a set of the first exercise, rest, a set of the second, rest, back to the first. Finish all rounds, then the next pair. Each muscle still gets ~3 min rest, but the clock only runs ~1.5.</dd><dt>Clock</dt><dd>The times on each block (0:05–0:19…) count from when you walk in. Glance at your phone: if you&#x27;re behind, keep going in order and cut from the bottom.</dd><dt>Late?</dt><dd>Drop the last set of each pair, never the first exercise. The first pair matters most.</dd><dt>Rest</dt><dd>90 s between moves in a pair; 60 s for small exercises. Rest longer only if your breathing hasn&#x27;t settled.</dd><dt>Crowded?</dt><dd>If the gym is crowded and you&#x27;d lose the spot, do the pair as straight sets (all sets of one, then the other) with 2 min rest and drop one set of the second exercise.</dd><dt>Log it</dt><dd>After the last set, write weight × reps of your best set and tick the exercise. Next time, try to beat it.</dd><dt>Taken?</dt><dd>Machine taken? Big lifts: use the listed swap. Small exercises: do the next one and come back.</dd></dl></section>
+<section id="progress"><h2>Adding weight</h2><dl class="steps"><dt>Weeks 1–2<br><span class='eyebrow'>Learn</span></dt><dd>2 sets of everything instead of 3. Stop every set with ~3 reps still in the tank. Film your squat, RDL, bench and deadlift once and compare with the GIF.</dd><dt>Week 3 on<br><span class='eyebrow'>Build</span></dt><dd>Full sets. Stop with 1–2 reps in the tank (0–1 on the last set of small moves). When every set reaches the top of the rep range, add the smallest weight step next time.</dd><dt>When stuck<br><span class='eyebrow'>Reset</span></dt><dd>Same weight, same reps 3 sessions running → take 10% off that lift and build back up. Two or more lifts stuck at once, or joints achy → one easy week: half the sets, same weights.</dd></dl></section>
+<section id="backup"><h2>Back up your log</h2>
+  <p class="does">Download your full workout history as a file, or load one back (new phone, or a new copy of this plan).</p>
+  <div class="links"><button class="toggle" type="button" id="logexport">Download log</button>
+  <label class="toggle" for="logimport">Load a backup</label><input type="file" id="logimport" accept=".json,application/json" hidden></div></section>
+</div>
+<script>
+(function(){
+  /* Day tabs: per-device convenience (browser storage). */
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+               set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  const tabs=[...document.querySelectorAll('.days button')], panels=[...document.querySelectorAll('.day')];
+  function show(id){tabs.forEach(t=>t.setAttribute('aria-selected',t.dataset.day===id));
+    panels.forEach(p=>p.hidden=p.id!=='day-'+id); store.set('excoach.day',id);}
+  tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.day)));
+  const now=new Date(), today=['sun','mon','tue','wed','thu','fri','sat'][now.getDay()];
+  const hash=location.hash.slice(1);
+  show(tabs.some(t=>t.dataset.day===hash)?hash:today);
+  document.addEventListener('click',ev=>{const g=ev.target.closest('.gif'); if(g) g.closest('.ex').classList.toggle('big');});
+  document.querySelectorAll('.wtoggle').forEach(b=>b.addEventListener('click',()=>{
+    const w=b.nextElementSibling; w.hidden=!w.hidden; b.textContent=w.hidden?'Show routine':'Hide routine';}));
+
+  /* Workout log: one entry per exercise per date {date, ex, v, done}. Saved to the viewer's private
+     space in the artifact db (syncs across devices); browser storage is the fallback when db is absent. */
+  const pad=n=>String(n).padStart(2,'0');
+  const D=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const nice=d=>new Date(d+'T12:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+  const entries=new Map();
+  try{Object.values(JSON.parse(localStorage.getItem('excoach.log')||'{}')).forEach(x=>entries.set(x.date+'_'+x.ex,x));}catch(e){}
+  let col=null; const status=document.getElementById('syncstatus');
+  const saveLocal=()=>{try{localStorage.setItem('excoach.log',JSON.stringify(Object.fromEntries(entries)))}catch(e){}};
+  const timers={};
+  function save(x){
+    entries.set(x.date+'_'+x.ex,x); saveLocal();
+    if(!col) return;
+    clearTimeout(timers[x.ex]);
+    timers[x.ex]=setTimeout(()=>col.doc(x.date+'_'+x.ex).set(x).catch(()=>{if(status) status.textContent='Not synced: saved on this device only.';}),700);
+  }
+  function render(){
+    document.querySelectorAll('.ex[data-ex]').forEach(a=>{
+      const ex=a.dataset.ex, cur=entries.get(D+'_'+ex)||{};
+      const chk=a.querySelector('.chk'); chk.checked=!!cur.done; a.classList.toggle('done',chk.checked);
+      const inp=a.querySelector('.logv'); if(!inp) return;
+      if(document.activeElement!==inp) inp.value=cur.v||'';
+      const past=[...entries.values()].filter(x=>x.ex===ex&&x.date<D&&x.v).sort((p,q)=>q.date.localeCompare(p.date));
+      const h=a.querySelector('.hist'); h.replaceChildren();
+      if(!past.length) return;
+      const last=document.createElement('p'); last.className='lastv';
+      last.textContent=`Last time (${nice(past[0].date)}): ${past[0].v}. Beat it.`; h.append(last);
+      if(past.length>1){
+        const b=document.createElement('button'); b.type='button'; b.className='histbtn'; b.textContent=`History (${past.length})`;
+        const ul=document.createElement('ul'); ul.className='histlist'; ul.hidden=true;
+        past.slice(0,12).forEach(x=>{const li=document.createElement('li'); li.textContent=`${nice(x.date)} · ${x.v}`; ul.append(li);});
+        b.addEventListener('click',()=>{ul.hidden=!ul.hidden;}); h.append(b,ul);
+      }
+    });
+  }
+  document.querySelectorAll('.ex[data-ex]').forEach(a=>{
+    const ex=a.dataset.ex, get=()=>entries.get(D+'_'+ex)||{date:D,ex,v:'',done:false};
+    a.querySelector('.chk').addEventListener('change',ev=>{save({...get(),done:ev.target.checked}); a.classList.toggle('done',ev.target.checked);});
+    const inp=a.querySelector('.logv');
+    if(inp) inp.addEventListener('input',()=>save({...get(),v:inp.value.trim()}));
+  });
+  document.querySelectorAll('.reset').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#day-'+b.dataset.day+' .ex[data-ex]').forEach(a=>{
+      const x=entries.get(D+'_'+a.dataset.ex); if(x&&x.done) save({...x,done:false});}); render();}));
+  render();
+
+  /* Backup: export the whole log as a JSON file, import merges one back (newer device, new host). */
+  const exp=document.getElementById('logexport'), imp=document.getElementById('logimport');
+  if(exp) exp.addEventListener('click',async()=>{
+    const data=JSON.stringify([...entries.values()].sort((p,q)=>p.date.localeCompare(q.date)),null,1);
+    const filename='workout-log-'+D+'.json', C=window.claude, dl=C&&await C.use('downloads');
+    if(dl){try{await dl.save({filename,data});return;}catch(e){}}
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+    a.download=filename; document.body.append(a); a.click(); a.remove();
+  });
+  if(imp) imp.addEventListener('change',async()=>{
+    const f=imp.files[0]; if(!f) return;
+    try{const rows=JSON.parse(await f.text()); let n=0;
+      rows.forEach(x=>{if(x&&x.date&&x.ex){save(x); n++;}}); render();
+      if(status) status.textContent=`Imported ${n} log entries.`;}
+    catch(e){ if(status) status.textContent='That file is not a workout log backup.'; }
+    imp.value='';
+  });
+
+  (async()=>{
+    const C=window.claude;
+    const [db,user]=C?await Promise.all([C.use('db'),C.use('user')]):[null,null];
+    const id=user&&await user.id();
+    if(!db||!id){ if(status) status.textContent='Saved on this device only (open while signed in to sync).'; return; }
+    col=db.collection('data/users/'+id);
+    try{
+      const snap=await col.orderBy('date','desc').limit(1000).get();
+      const local=[...entries.values()];
+      snap.docs.forEach(d=>{const x=d.data(); if(x&&x.date&&x.ex) entries.set(x.date+'_'+x.ex,x);});
+      /* push anything logged on this device before sync was available */
+      local.forEach(x=>{if(!snap.docs.some(d=>d.id===x.date+'_'+x.ex)) col.doc(x.date+'_'+x.ex).set(x).catch(()=>{});});
+      saveLocal(); render();
+      if(status) status.textContent='Log synced to your account: phone and laptop see the same history.';
+    }catch(e){ if(status) status.textContent='Could not reach your saved log; saving on this device for now.'; }
+  })();
+})();
+</script>

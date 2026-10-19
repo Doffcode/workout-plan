@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Training Works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dce1;
+  --accent:#1f6f8b; --accent-ink:#ffffff; --plate:#c8402f; --swim:#2a7fbf; --chip:#e3eaee; --good:#2f8a57;
+  --c-push:#c8402f; --c-pull:#1f6f8b; --c-legs:#8a6a1f; --c-full:#5b4b9a; --c-rest:#e3eaee;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; --good:#5cc489;
+  --c-push:#ef6b58; --c-pull:#4fb3d4; --c-legs:#d4b04f; --c-full:#a594e6; --c-rest:#1f2c36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --panel:#17212a; --ink:#e4ebf0; --muted:#93a2ad; --line:#26343f;
+  --accent:#4fb3d4; --accent-ink:#06222c; --plate:#ef6b58; --swim:#6db4ea; --chip:#1f2c36; --good:#5cc489;
+  --c-push:#ef6b58; --c-pull:#4fb3d4; --c-legs:#d4b04f; --c-full:#a594e6; --c-rest:#1f2c36; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:2.6rem;text-transform:uppercase;letter-spacing:.01em}
+h2{font-size:1.8rem;text-transform:uppercase;letter-spacing:.02em}
+h3{font-size:1.1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font:600 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{padding-top:28px;display:flex;flex-direction:column;gap:14px}
+.back{font:600 .8rem var(--mono);text-transform:uppercase;letter-spacing:.08em;text-decoration:none}
+section{display:flex;flex-direction:column;gap:14px}
+.num{font:700 .9rem/1 var(--mono);color:var(--accent);letter-spacing:.08em}
+.rule{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.rule b{font:700 1.15rem/1.2 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.you{border-left-color:var(--plate)}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.fig svg{width:100%;height:auto;display:block;overflow:visible}
+.cap{font-size:.86rem;color:var(--muted)}
+svg text{font-family:var(--mono);fill:var(--muted)}
+svg .lbl{font-family:var(--display);font-weight:700;fill:var(--ink)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td.n{font:600 .9rem var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+/* Split grids */
+.split{display:grid;grid-template-columns:7.5em repeat(7,1fr);gap:3px;font:600 .7rem/1 var(--mono);text-transform:uppercase}
+.split .h{color:var(--muted);text-align:center;padding:4px 0}
+.split .name{font:700 .95rem/1.1 var(--display);letter-spacing:.02em;align-self:center;color:var(--ink);text-transform:uppercase}
+.split .c{border-radius:4px;padding:9px 0;text-align:center;color:#fff;letter-spacing:.02em}
+.c.push{background:var(--c-push)}.c.pull{background:var(--c-pull)}.c.legs{background:var(--c-legs)}.c.full{background:var(--c-full)}
+.c.off{background:var(--c-rest);color:var(--muted)}
+.c.swim{background:var(--swim)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .split .c:not(.off){color:#0f161b}}
+:root[data-theme="dark"] .split .c:not(.off){color:#0f161b}
+@media (max-width:480px){.split{grid-template-columns:5.2em repeat(7,1fr);font-size:.58rem}.split .name{font-size:.8rem}h1{font-size:2.1rem}}
+/* Draw-in animations */
+.draw{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 3.2s ease-out .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grow{transform-box:fill-box;transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleY(0)}}
+.pop{opacity:0;animation:pop .4s ease-out forwards}
+@keyframes pop{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.draw,.grow,.pop{animation:none!important;stroke-dashoffset:0;opacity:1}}
+.vol{display:flex;flex-direction:column;gap:6px}
+.vrow{display:grid;grid-template-columns:7.6em 1fr;gap:10px;align-items:center;font:500 .8rem/1 var(--mono)}
+.vl{text-align:right;color:var(--muted);white-space:nowrap}
+.vt{position:relative;height:18px;display:flex;align-items:center;gap:6px}
+.vb{height:100%;background:var(--accent);border-radius:2px;flex:none;transform-origin:left;animation:growx .8s cubic-bezier(.2,.8,.2,1) both}
+.vb.hot{background:var(--plate)}
+.vt b{font:700 .85rem/1 var(--display);white-space:nowrap}
+.vhead .vt{height:16px}
+.vol .vt::before{content:"";position:absolute;left:40%;width:40%;top:-4px;bottom:-4px;background:var(--good);opacity:.1;pointer-events:none}
+.vhead .vt::before{display:none}
+.vhead i{position:absolute;transform:translateX(-50%);font-style:normal;color:var(--muted);font-size:.7rem}
+.vhead em{position:absolute;left:60%;transform:translateX(-50%);font-style:normal;color:var(--good);font-size:.7rem;top:-14px}
+@keyframes growx{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.vb{animation:none}}
+.src li{font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="index.html">← Back to the plan</a>
+  <span class="eyebrow">The rules behind your plan · from research</span>
+  <h1>How Training Works</h1>
+  <p>Instagram reels show <i>exercises</i>. What actually makes a plan work is a handful of rules about <b>how much</b>, <b>how hard</b>, <b>how often</b> and <b>how you add to it</b>. Here they are, each with what it means for your week.</p>
+</header>
+
+<!-- 1 -->
+<section id="overload">
+  <span class="num">01</span><h2>Progressive overload</h2>
+  <p>Your muscles adapt to exactly what you ask of them, then stop. To keep growing you have to ask a bit more over time: more reps, then more weight. If you lift the same 10 kg for 10 reps forever, your body has no reason to change.</p>
+  <div class="fig">
+    <svg viewBox="0 0 640 230" role="img" aria-label="Staircase: the weight steps up every few weeks over 16 weeks">
+      <line x1="40" y1="200" x2="630" y2="200" stroke="var(--line)"/>
+      <g fill="var(--accent)">
+        <rect class="grow" style="animation-delay:.0s" x="50"  y="160" width="64" height="40" rx="3"/>
+        <rect class="grow" style="animation-delay:.25s" x="122" y="160" width="64" height="40" rx="3"/>
+        <rect class="grow" style="animation-delay:.5s" x="194" y="140" width="64" height="60" rx="3"/>
+        <rect class="grow" style="animation-delay:.75s" x="266" y="140" width="64" height="60" rx="3"/>
+        <rect class="grow" style="animation-delay:1s" x="338" y="118" width="64" height="82" rx="3"/>
+        <rect class="grow" style="animation-delay:1.25s" x="410" y="96" width="64" height="104" rx="3"/>
+        <rect class="grow" style="animation-delay:1.5s" fill="var(--muted)" opacity=".45" x="482" y="140" width="64" height="60" rx="3"/>
+        <rect class="grow" style="animation-delay:1.75s" x="554" y="74" width="64" height="126" rx="3"/>
+      </g>
+      <g font-size="11" text-anchor="middle">
+        <text x="82" y="218">wk 1–2</text><text x="154" y="218">3–4</text><text x="226" y="218">5</text><text x="298" y="218">6</text>
+        <text x="370" y="218">7</text><text x="442" y="218">8</text><text x="514" y="218">deload</text><text x="586" y="218">restart</text>
+      </g>
+      <g font-size="12" text-anchor="middle" class="lbl">
+        <text class="lbl" x="82" y="152">40 kg</text><text class="lbl" x="154" y="152">40 kg</text><text class="lbl" x="226" y="132">42.5</text>
+        <text class="lbl" x="298" y="132">42.5</text><text class="lbl" x="370" y="110">45</text><text class="lbl" x="442" y="88">47.5</text>
+        <text class="lbl" x="514" y="132">easy</text><text class="lbl" x="586" y="66">50 kg</text>
+      </g>
+    </svg>
+    <p class="cap">Example: your Romanian deadlift (numbers are illustrative). Small steps, not every week. When you stall, an easy week lets fatigue clear so you come back stronger.</p>
+  </div>
+
+  <h3>The method you'll use: double progression</h3>
+  <p>Every exercise in your plan has a <b>rep range</b>, like <b>3 × 12–15</b>. Keep the same weight and try to beat your reps each week. Once <b>every set hits the top of the range</b>, go up to the next weight. Your reps drop back to the bottom of the range, and you climb again.</p>
+  <div class="fig">
+    <svg viewBox="0 0 640 250" role="img" aria-label="Double progression: reps climb from 12 to 15 at 5 kg, then the weight goes to 6 kg and reps reset to 12">
+      <g stroke="var(--line)"><line x1="60" y1="40" x2="620" y2="40"/><line x1="60" y1="190" x2="620" y2="190"/></g>
+      <rect x="60" y="40" width="560" height="150" fill="var(--good)" opacity=".07"/>
+      <text x="54" y="44" font-size="11" text-anchor="end">15</text><text x="54" y="194" font-size="11" text-anchor="end">12</text>
+      <text x="54" y="120" font-size="10" text-anchor="end">reps</text>
+      <line x1="370" y1="20" x2="370" y2="215" stroke="var(--plate)" stroke-dasharray="4 4"/>
+      <text x="376" y="30" font-size="11" style="fill:var(--plate)">+1 kg</text>
+      <polyline class="draw" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"
+        points="90,190 150,150 210,110 270,70 330,40 410,190 470,140 530,90 590,40"/>
+      <g fill="var(--accent)">
+        <circle class="pop" style="animation-delay:.4s" cx="90" cy="190" r="6"/><circle class="pop" style="animation-delay:.75s" cx="150" cy="150" r="6"/>
+        <circle class="pop" style="animation-delay:1.1s" cx="210" cy="110" r="6"/><circle class="pop" style="animation-delay:1.45s" cx="270" cy="70" r="6"/>
+        <circle class="pop" style="animation-delay:1.8s" cx="330" cy="40" r="7" fill="var(--good)"/>
+        <circle class="pop" style="animation-delay:2.2s" cx="410" cy="190" r="6"/><circle class="pop" style="animation-delay:2.55s" cx="470" cy="140" r="6"/>
+        <circle class="pop" style="animation-delay:2.9s" cx="530" cy="90" r="6"/><circle class="pop" style="animation-delay:3.25s" cx="590" cy="40" r="7" fill="var(--good)"/>
+      </g>
+      <g font-size="11" text-anchor="middle">
+        <text x="90" y="235">wk1</text><text x="150" y="235">wk2</text><text x="210" y="235">wk3</text><text x="270" y="235">wk4</text><text x="330" y="235">wk5</text>
+        <text x="410" y="235">wk6</text><text x="470" y="235">wk7</text><text x="530" y="235">wk8</text><text x="590" y="235">wk9</text>
+      </g>
+      <text class="lbl" x="200" y="20" font-size="14" text-anchor="middle">5 kg</text>
+      <text class="lbl" x="500" y="20" font-size="14" text-anchor="middle">6 kg</text>
+    </svg>
+    <p class="cap">Lateral raise, 3 × 12–15. A real week-1 log might look like 12, 11, 10. That's fine: the bottom of the range on the first set is enough. Move up only when you get 15, 15, 15.</p>
+  </div>
+  <div class="rule you"><b>Your job</b><p>Log every lift in the "Last:" box on the plan (e.g. <code>40 × 10,9,8</code>). Next week, beat it by one rep somewhere. That box <i>is</i> progressive overload. Without it you're guessing.</p></div>
+</section>
+
+<!-- 2 -->
+<section id="effort">
+  <span class="num">02</span><h2>How hard: stop 1–2 reps short</h2>
+  <p>A set only builds muscle if it's hard. The last few reps, when the bar slows down, do most of the work. A 2024 meta-analysis found muscle growth rises the closer you go to failure. Strength gains, though, barely depended on it. Going all the way to failure on every set mostly adds fatigue.</p>
+  <div class="fig">
+    <svg viewBox="0 0 640 120" role="img" aria-label="A set of 10 reps: 8 filled circles, 2 empty circles meaning 2 reps in reserve">
+      <g>
+        <circle cx="40" cy="50" r="20" fill="var(--accent)" opacity=".35"/><circle cx="100" cy="50" r="20" fill="var(--accent)" opacity=".4"/>
+        <circle cx="160" cy="50" r="20" fill="var(--accent)" opacity=".45"/><circle cx="220" cy="50" r="20" fill="var(--accent)" opacity=".5"/>
+        <circle cx="280" cy="50" r="20" fill="var(--accent)" opacity=".6"/><circle cx="340" cy="50" r="20" fill="var(--accent)" opacity=".7"/>
+        <circle cx="400" cy="50" r="20" fill="var(--accent)" opacity=".85"/><circle cx="460" cy="50" r="20" fill="var(--plate)"/>
+        <circle cx="520" cy="50" r="19" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>
+        <circle cx="580" cy="50" r="19" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>
+      </g>
+      <text x="40" y="100" font-size="11" text-anchor="middle">rep 1: easy</text>
+      <text x="400" y="100" font-size="11" text-anchor="middle">slow</text>
+      <text x="460" y="100" font-size="11" text-anchor="middle" style="fill:var(--plate)">stop</text>
+      <text x="550" y="100" font-size="11" text-anchor="middle">2 left in the tank</text>
+    </svg>
+    <p class="cap">"2 reps in reserve": you stop when you're sure you could do 2 more with clean form, but not 4.</p>
+  </div>
+  <ul>
+    <li><b>Big lifts</b> (squat, deadlift, bench): 2 in reserve. Failing these is risky and very tiring.</li>
+    <li><b>Small moves</b> (curls, lateral raises, push-ups): 0–1 in reserve on the last set is fine.</li>
+    <li><b>Beginner warning:</b> new lifters nearly always underestimate what they can do. Once a month, take the last set of a safe exercise (like a machine or push-ups) to true failure. That teaches you where "2 left" really is.</li>
+  </ul>
+</section>
+
+<!-- 3 -->
+<section id="volume">
+  <span class="num">03</span><h2>How much: sets per muscle per week</h2>
+  <p>The best single number to count is <b>hard sets per muscle per week</b>. More sets give more growth, but every extra set adds a little less than the one before. Even 4 sets a week builds muscle. You'll often hear "10–20 sets is optimal". Greg Nuckols (Stronger By Science) traced that number back: it came from how one meta-analysis grouped its studies, and there was "never a long period of time where there was a strong empirical case" for it. His practical advice: <b>about 10 sets a week is a good starting point</b>, then add sets if you're recovering and progress stalls.</p>
+  <div class="fig">
+    <div class="vol" role="img" aria-label="Weekly sets per muscle in your plan">
+      <div class="vrow vhead"><span></span><span class="vt"><i style="left:40%">10</i><i style="left:80%">20</i><em>start ~10, add if stuck</em></span></div>
+      <div class="vrow"><span class="vl">Back/lats</span><span class="vt"><span class="vb" style="width:48.0%"></span><b>12</b></span></div><div class="vrow"><span class="vl">Hamstrings</span><span class="vt"><span class="vb" style="width:42.0%"></span><b>10.5</b></span></div><div class="vrow"><span class="vl">Side delts</span><span class="vt"><span class="vb hot" style="width:42.0%"></span><b>10.5 ← width</b></span></div><div class="vrow"><span class="vl">Chest</span><span class="vt"><span class="vb" style="width:40.0%"></span><b>10</b></span></div><div class="vrow"><span class="vl">Quads</span><span class="vt"><span class="vb" style="width:38.0%"></span><b>9.5</b></span></div><div class="vrow"><span class="vl">Triceps</span><span class="vt"><span class="vb" style="width:34.0%"></span><b>8.5</b></span></div><div class="vrow"><span class="vl">Glutes</span><span class="vt"><span class="vb" style="width:32.0%"></span><b>8</b></span></div><div class="vrow"><span class="vl">Biceps</span><span class="vt"><span class="vb" style="width:32.0%"></span><b>8</b></span></div><div class="vrow"><span class="vl">Front delts</span><span class="vt"><span class="vb" style="width:32.0%"></span><b>8</b></span></div><div class="vrow"><span class="vl">Abs</span><span class="vt"><span class="vb" style="width:28.0%"></span><b>7</b></span></div><div class="vrow"><span class="vl">Rear delts</span><span class="vt"><span class="vb" style="width:20.0%"></span><b>5</b></span></div><div class="vrow"><span class="vl">Calves</span><span class="vt"><span class="vb" style="width:20.0%"></span><b>5</b></span></div>
+    </div>
+    <p class="cap">Your plan (version 2), counted by a script so it always matches. A row or press counts fully for its main muscle and half for helpers (a bench set gives triceps ½ a set). Front delts are lower because every press already hits them.</p>
+  </div>
+  <div class="rule you"><b>How your plan uses this</b><p>Back and side delts get the most (12 and 10 sets) because your goal is a V-taper. Everything else starts at 5–9 sets, which is plenty for a beginner. From week 6, if you're recovering well and lifts keep rising, the plan adds sets to the muscles you care about most.</p></div>
+</section>
+
+<!-- 4 -->
+<section id="frequency">
+  <span class="num">04</span><h2>How often: each muscle twice a week</h2>
+  <p>Once your weekly sets are matched, how you spread them out barely matters for growth. Twice a week is still the smart default. Doing 20 sets of chest in one session means the last 10 are junk, because you're too tired to make them hard. Split across two days, every set is good quality.</p>
+  <div class="rule"><b>Rule of thumb</b><p>No more than about 8–10 hard sets for one muscle in one session. If you need more, spread them over another day.</p></div>
+</section>
+
+<!-- 5 -->
+<section id="splits">
+  <span class="num">05</span><h2>Splits: push, pull, legs and the rest</h2>
+  <p>A <b>split</b> is just how you divide the body across the week. None is magic. A 2024 meta-analysis compared splits with full-body training at equal weekly sets and found no real difference in muscle or strength. Pick the one that fits your week and that you'll actually turn up for.</p>
+  <div class="fig">
+    <div class="split" aria-label="Weekly layout of common splits">
+      <span></span><span class="h">Mon</span><span class="h">Tue</span><span class="h">Wed</span><span class="h">Thu</span><span class="h">Fri</span><span class="h">Sat</span><span class="h">Sun</span>
+      <span class="name">Full body</span><span class="c full">All</span><span class="c off">–</span><span class="c full">All</span><span class="c off">–</span><span class="c full">All</span><span class="c off">–</span><span class="c off">–</span>
+      <span class="name">Upper / lower</span><span class="c push">Up</span><span class="c legs">Low</span><span class="c off">–</span><span class="c push">Up</span><span class="c legs">Low</span><span class="c off">–</span><span class="c off">–</span>
+      <span class="name">Push pull legs</span><span class="c push">Push</span><span class="c pull">Pull</span><span class="c legs">Legs</span><span class="c push">Push</span><span class="c pull">Pull</span><span class="c legs">Legs</span><span class="c off">–</span>
+      <span class="name">Bro split</span><span class="c push">Chest</span><span class="c pull">Back</span><span class="c push">Shldr</span><span class="c legs">Legs</span><span class="c pull">Arms</span><span class="c off">–</span><span class="c off">–</span>
+      <span class="name" style="color:var(--plate)">Yours</span><span class="c full">Full A</span><span class="c off">Light</span><span class="c swim">Swim</span><span class="c full">Full B</span><span class="c swim">Swim</span><span class="c full">Full C</span><span class="c swim">Swim</span>
+    </div>
+    <p class="cap"><b>Push</b> = chest, front shoulders, triceps (pressing things away). <b>Pull</b> = back, rear shoulders, biceps (pulling things toward you). <b>Legs</b> = quads, hamstrings, glutes, calves.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Split</th><th>Days</th><th>Each muscle</th><th>Good for</th><th>Catch</th></tr></thead>
+    <tbody>
+      <tr><td><b>Full body</b></td><td class="n">3</td><td class="n">3×/wk</td><td>Beginners, busy weeks</td><td>Long sessions; the last exercises get a tired you</td></tr>
+      <tr><td><b>Upper / lower</b></td><td class="n">4</td><td class="n">2×/wk</td><td>Beginner to intermediate; the classic next step</td><td>Upper days get long</td></tr>
+      <tr><td><b>Push / pull / legs</b></td><td class="n">6</td><td class="n">2×/wk</td><td>People who love the gym daily</td><td>Miss one day and the whole week shifts; 6 days is a lot alongside swimming</td></tr>
+      <tr><td><b>Bro split</b></td><td class="n">5</td><td class="n">1×/wk</td><td>Advanced lifters who can handle huge single sessions</td><td>Each muscle waits 7 days; mostly junk sets for beginners</td></tr>
+    </tbody></table></div>
+  <div class="rule you"><b>Why yours is full body</b><p>Your week decides it. Gym and pool are both at 4 PM, so you can only lift on Mon, Tue, Thu and Sat, and Tuesday is your fast day. Squatting and deadlifting after ~20 hours without food is asking for dizziness, so the heavy work goes into three full-body days (Mon, Thu, Sat), each muscle trained 2–3 times a week. Full body is also what Eric Helms (PhD, natural pro bodybuilder) offers beginners as his 3-day option, and the 2024 meta-analysis above found it builds as much muscle as a split at the same weekly sets. Tuesday is a short, optional machine session for shoulders and arms.</p></div>
+</section>
+
+<!-- 6 -->
+<section id="reps">
+  <span class="num">06</span><h2>Reps, weight and rest</h2>
+  <ul>
+    <li><b>Any rep range from about 5 to 30 builds muscle</b>, as long as the set ends close to failure. Heavy weights (3–8 reps) build <i>strength</i> best. That's why your main lifts sit at 6–10 reps and the small moves at 12–15.</li>
+    <li><b>Rest longer than you think.</b> Rest that's too short makes the next set weaker, and you lose reps. Research finds a small benefit to resting over 60 s, and little difference beyond 90 s.
+      <br>→ Big lifts: <b>2–3 min</b>. Small moves: <b>60–90 s</b>. Ab circuits: as written.</li>
+    <li><b>Form before weight.</b> A rep only counts if it goes through the full range shown in the GIF. Adding weight by cutting the range short is fake progress.</li>
+  </ul>
+</section>
+
+<!-- 7 -->
+<section id="recovery">
+  <span class="num">07</span><h2>Recovery: where growth actually happens</h2>
+  <p>Training is the signal; muscle is built in the 24–72 hours after, if you give it materials and sleep.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Lever</th><th>Target for you</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><b>Protein</b></td><td class="n">≥ 112 g/day</td><td>Research shows gains level off around 1.6 g per kg of body weight a day (70 kg × 1.6). Your plan's 120–140 g gives margin.</td></tr>
+      <tr><td><b>Calories</b></td><td>About maintenance</td><td>Skinny-fat beginners can gain muscle and lose fat together (recomp). A big deficit would stall the muscle side.</td></tr>
+      <tr><td><b>Sleep</b></td><td class="n">7½–8 h</td><td>Short sleep lowers your training quality and shifts weight loss toward muscle instead of fat.</td></tr>
+      <tr><td><b>Deload</b></td><td>When stuck, not on a calendar</td><td>Half the sets, same weights, for one week, when several lifts stall or joints ache. Deloads are common practice but barely studied (a 2023 expert survey called them "under-researched"), and Helms says beginners don't need them on a schedule.</td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 8 -->
+<section id="abs">
+  <span class="num">08</span><h2>Why ab exercises won't burn belly fat</h2>
+  <p>Spot reduction, burning fat where you exercise, doesn't happen. A 2021 meta-analysis of studies that trained only one limb found the trained and untrained limbs lost the same fat. Your belly fat leaves when your <i>overall</i> body fat drops, from food and total training.</p>
+  <p>Ab training still matters: it makes the muscles thicker, so they show sooner once the fat is gone. That's why your plan has ab work three days a week, and why the reels promising "no belly in 30 days with 100 crunches" were left out.</p>
+</section>
+
+<!-- 9 -->
+<section id="checklist">
+  <span class="num">09</span><h2>The whole thing on one card</h2>
+  <div class="rule"><b>Every session</b>
+    <ul>
+      <li>Warm up, then do the big lift first, while you're fresh.</li>
+      <li>Every set ends 1–2 reps from failure.</li>
+      <li>Log weight × reps. Beat last week by a rep or a little weight.</li>
+      <li>Rest 2–3 min on big lifts, 60–90 s on small ones.</li>
+    </ul></div>
+  <div class="rule"><b>Every week</b>
+    <ul>
+      <li>About 10 hard sets per muscle to start, each muscle trained twice; add sets only when you're recovering and stuck.</li>
+      <li>Protein ≥ 112 g a day, 7½+ h of sleep.</li>
+      <li>Weigh yourself every morning and watch the weekly average, not the daily number.</li>
+    </ul></div>
+  <div class="rule"><b>Every 2 weeks</b><p>Check lifts, waist and weight average against the rules on your plan page, and adjust only what the rules say. Photos every 4 weeks in the same light.</p></div>
+</section>
+
+<section id="sources">
+  <h3>Research this page is based on</h3>
+  <ul class="src">
+    <li>Schoenfeld, Grgic & Krieger (2019). Training frequency meta-analysis, <i>J Sports Sci</i> 37(11). <a href="https://pubmed.ncbi.nlm.nih.gov/30558493/" target="_blank" rel="noopener">PubMed</a></li>
+    <li>Schoenfeld, Ogborn & Krieger (2017). Dose-response of weekly sets and hypertrophy, <i>J Sports Sci</i> 35(11).</li>
+    <li>Pelland et al. (2024 preprint). Volume and frequency meta-regressions. <a href="https://sportrxiv.org/index.php/server/preprint/view/460" target="_blank" rel="noopener">SportRxiv</a></li>
+    <li>Robinson et al. (2024). Proximity to failure, strength and hypertrophy, <i>Sports Med</i> 54(9). <a href="https://www.fau.edu/newsdesk/articles/muscle-growth-strength-study" target="_blank" rel="noopener">Summary</a></li>
+    <li>Ramos-Campo et al. (2024). Split vs full-body training, <i>J Strength Cond Res</i> 38(7).</li>
+    <li>Schoenfeld et al. (2017). Low- vs high-load training, <i>J Strength Cond Res</i> 31(12). <a href="https://pubmed.ncbi.nlm.nih.gov/28834797/" target="_blank" rel="noopener">PubMed</a></li>
+    <li>Singer et al. (2024). "Give it a rest": rest intervals and hypertrophy, <i>Front Sports Act Living</i>. <a href="https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2024.1429789/pdf" target="_blank" rel="noopener">Paper</a></li>
+    <li>Morton et al. (2018). Protein supplementation meta-analysis, <i>Br J Sports Med</i> 52(6). <a href="https://bjsm.bmj.com/content/52/6/376.abstract" target="_blank" rel="noopener">Abstract</a></li>
+    <li>Ramirez-Campillo et al. (2021). Spot reduction meta-analysis, <i>Human Movement</i>. <a href="https://doi.org/10.5114/HM.2022.110373" target="_blank" rel="noopener">Paper</a></li>
+  </ul>
+</section>
+</div>
+</body>
+</html>
