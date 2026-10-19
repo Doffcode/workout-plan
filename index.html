@@ -574,7 +574,7 @@ td.g{font:600 .95rem var(--mono);font-variant-numeric:tabular-nums;text-align:ri
     const C=window.claude;
     const [db,user]=C?await Promise.all([C.use('db'),C.use('user')]):[null,null];
     const id=user&&await user.id();
-    if(!db||!id){ if(status) status.textContent='Saved on this device only (open while signed in to sync).'; return; }
+    if(!db||!id){ if(status) status.textContent='Your log is saved on this phone. Tap Download log (bottom) now and then as a backup.'; return; }
     col=db.collection('data/users/'+id);
     try{
       const snap=await col.orderBy('date','desc').limit(1000).get();
